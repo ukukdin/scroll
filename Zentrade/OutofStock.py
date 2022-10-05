@@ -10,18 +10,17 @@ LOGIN_INFO = {
     "return_url" : "https://www.zentrade.co.kr/shop/goods/goods_list.php?&page=",
     "m_id": "hitrend",
     "password": "!qaz2wsx3edc"
-
 }
 login_res = session.post(loginPage, data=LOGIN_INFO)
-Sold_out = "https://www.zentrade.co.kr/shop/goods/goods_soldout.php?&page="
-login_res = session.get(Sold_out)
+Sold_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=40&resale_yn=all'
+login_res = session.get(Sold_out_url)
 login_res.raise_for_status()
 html = BS(login_res.text, "html.parser")
 detail = html.select("td table[class=outline_both]")
 
-result=[]
-def list(result):
-    for page in range(19):
+result_out_of_stock=[]
+def list(result_out_of_stock):
+    for page in range(24):
         for so in detail:
             # 상품번호
             producted_num = so.select("td:nth-of-type(1) font[style^=font] b")
@@ -42,9 +41,10 @@ def list(result):
 
             # # 재입고여부
             #
-            reordered = so.select("td[align=center] b font")
-            reorder = reordered[page].string
+            reordered = so.find_all("td", {"height": "50"})
 
+            reorder = reordered[page].string
+            # print(reorder)
 
             #  제품 품절이유
 
@@ -52,17 +52,26 @@ def list(result):
             reason = reasoned[page].text
 
             # 재입고예정일
+            # 재입고 예정일 1번째단
+            delete_dated1 = so.select("tr:nth-child(1) td:nth-of-type(3)")
+            b = []
+            b.append(delete_dated1[1])
 
-            reorder_date = so.select("tr td:nth-of-type(6)")
-            recorder = reorder_date[page].text
+            reorder_dated = so.select("td:nth-of-type(6)")
 
+            reorder_da = b + reorder_dated
+            reorder_date = reorder_da[page].text
 
-                  # 삭제예정일
+            # 삭제예정일 첫번째단
+            delete_dated2 = so.select("tr:nth-child(1) td:nth-of-type(4)")
             delete_dated = so.select("td:nth-of-type(7)")
-            del_date = delete_dated[page].text
-            # print(delete_dated[page].text)
+            a = []
+            a.append(delete_dated2[1])
+            expire_dated = a + delete_dated
+            expire_date = expire_dated[page].text
 
-            result.append([prd_num]+ [prod_detail]+[price]+[out]+[reorder]+[recorder]+[del_date]+[reason])
+        result_out_of_stock.append(
+            [prd_num] + [prod_detail] + [price] + [out] + [reorder] + [reorder_date] + [expire_date] + [reason])
 
     return
 
@@ -70,13 +79,17 @@ def list(result):
 def main():
     result=[]
     print("ZenTrade의 전체상품 리스트")
-    list(result)
+    list(result_out_of_stock)
     list_table = pd.DataFrame(result,columns=('상품번호','상품정보','가격','제고정보','재입고여부','재입고예정일','삭제예정일','품절이유'))
-    list_table.to_csv('C:/Users/User/pythonProject12/list1.csv', encoding='cp949',mode='w',index=True)
-    del result[:]
+    list_table.to_csv('d:/zentrade/list121.csv', encoding='cp949',mode='w',index=True)
+    del result_out_of_stock[:]
 if __name__=='__main__':
     main()
 
+# 오늘날짜 구하기
+# def getDateToday():
+#     today = date.today()
+#     return today.strftime('%Y-%m-%d')
 
 
 '''

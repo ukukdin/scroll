@@ -3,7 +3,7 @@ import re
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup as BS
-import requests as req
+
 import datetime
 
 session = requests.Session()
@@ -24,16 +24,13 @@ result=[]
 def list(result):
     for pli in w:
         prodctlist = "https://www.zentrade.co.kr/shop/goods/goods_view.php?goodsno="+str(pli)+"&category="
-
         login_res = session.get(prodctlist)
         login_res.raise_for_status()
         html = BS(login_res.text, "html.parser")
-        prodctlist = "https://www.zentrade.co.kr/shop/goods/goods_view.php?goodsno="+str(pli)+"&category="
         login_res = session.get(prodctlist)
         login_res.raise_for_status()
         html = BS(login_res.text, "html.parser")
-
-        itemlist = html.select("div[class=indiv] ")
+        itemlist = html.select("div[class=indiv]")
 
         for detail in itemlist:
             # 카테고리
