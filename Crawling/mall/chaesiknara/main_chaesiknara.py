@@ -1,11 +1,11 @@
 from chaesiknara import Chaesiknara
-from mall.lib.es_pordlist import DataMallProdlistES
+from Crawling.mall.lib.es_pordlist import DataMallProdlistES
 
 if __name__ == '__main__':
 
     #######################
-    # test = 'create_file'
-    test = 'insert'
+    test = 'create_file'
+    # test = 'insert'
     # test = 'search_name'
 
     #######################

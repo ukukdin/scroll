@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import xlrd
-import common.util_common as cu
+import Crawling.common.util_common as cu
 import pandas as pd
 import platform
 import codecs

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from typing import List, Any
 
-from common.lib_es import LibES
+from Crawling.common.lib_es import LibES
 from elasticsearch import helpers
-from mall.lib.data_prodlist import DataMallProdlist
+from Crawling.mall.lib.data_prodlist import DataMallProdlist
 
 class DataMallProdlistES(LibES):
     def __init__(self):

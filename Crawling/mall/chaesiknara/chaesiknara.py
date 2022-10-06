@@ -3,11 +3,11 @@
 import time
 from bs4 import BeautifulSoup
 
-from common.lib_request import RequestHit
-import common.util_fileloader as fl
-import common.util_common as cu
-from mall.lib.data_prodlist import DataMallProdlist
-from mall.lib.es_pordlist import DataMallProdlistES
+from Crawling.common.lib_request import RequestHit
+import Crawling.common.util_fileloader as fl
+import Crawling.common.util_common as cu
+from Crawling.mall.lib.data_prodlist import DataMallProdlist
+from Crawling.mall.lib.es_pordlist import DataMallProdlistES
 import random
 
 class Chaesiknara(RequestHit):
@@ -390,7 +390,7 @@ if __name__ == '__main__':
 
     #######################
     test = 'create_file'
-    test = ' login'
+    # test = ' login'
     # test = 'insert'
     test = 'search_name'
     # test = 'parsor_one_file'
