@@ -85,35 +85,31 @@ class Whole_list(RequestHit):
     def setDate(self, date):
         self.date = date
 
-    # 코드별 페이지 삼품리스트 html 파일을 저장한다.
-    def getData(self,code):
-            # url
-        pa_url = self.Whole_prod_url.format(code)
-            # request
-        resp = self.request_get(pa_url,self.Whole_prod_url_header)
-            # create file
-        self.createCategoryFile(resp,code,0)
+    # 폴더 생성
     def make_directory(self):
         os.chdir("D:/data/")
         if os.path.isdir("D:/data/zentrade"):
             pass
         else:
             os.mkdir("zentrade")
+    # 파일 만들어서 저장
     def file_write(self):
-        for page in range(53):
+        for page in range(52):
             page = page+1
             url = self.Whole_prod_url+str(page)
             login_res = session.get(url).text
             self.make_directory()
-            html_file = open(f'./zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','w',encoding='cp949')
+            html_file = open(f'./zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','w', encoding='cp949')
             html_file.write(login_res)
             html_file.close()
+
+    # 페이지 상세 정보 가져오기
     def parser_wholelist(self):
         listproduct = []
-
-        for page in range(53):
+        num=[]
+        for page in range(52):
             page =page+1
-            file = open(f'./zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r',encoding='cp949')
+            file = open(f'D:/data/zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
             html = BS(file.read(),'html.parser')
 
             # html = BS(read.text, "html.parser")
@@ -123,18 +119,25 @@ class Whole_list(RequestHit):
                 tt = productList.select('div')
                 # 숫자
                 prod_num = tt[2].string.replace("No. ", "")
+
                 # 상품명
                 prod_name = tt[3].string
                 ttt = productList.select('b')
                 # print(ttt)
                 # 상품가격
                 prod_price = ttt[0].string
+                num.append(prod_num)
                 listproduct.append([prod_num]+[prod_name]+[prod_price])
+        #
+        # for i in listproduct:
+        #     a=i[:][0]
+        #
 
         return listproduct
 
 
-a = Whole_list()
+#
+a=Whole_list()
+a.parser_wholelist()
 a.file_write()
-print(a.parser_wholelist())
 
