@@ -2,10 +2,10 @@ import time
 from bs4 import BeautifulSoup as BS
 import requests
 from Crawling.common.lib_request import RequestHit
-import Crawling.common.util_fileloader as fl
-import Crawling.common.util_common as cu
-from Crawling.mall.lib.data_prodlist import DataMallProdlist
-from Crawling.mall.lib.es_pordlist import DataMallProdlistES
+# import Crawling.common.util_fileloader as fl
+# import Crawling.common.util_common as cu
+# from Crawling.mall.lib.data_prodlist import DataMallProdlist
+# from Crawling.mall.lib.es_pordlist import DataMallProdlistES
 import random
 import os
 session = requests.Session()
@@ -87,8 +87,8 @@ class Whole_list(RequestHit):
 
     # 폴더 생성
     def make_directory(self):
-        os.chdir("D:/data/")
-        if os.path.isdir("D:/data/zentrade"):
+        os.chdir("C:/Users/User")
+        if os.path.isdir("C:/Users/User/zentrade"):
             pass
         else:
             os.mkdir("zentrade")
@@ -109,7 +109,7 @@ class Whole_list(RequestHit):
         num=[]
         for page in range(52):
             page =page+1
-            file = open(f'D:/data/zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
+            file = open(f'C:/Users/User/zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
             html = BS(file.read(),'html.parser')
 
             # html = BS(read.text, "html.parser")
@@ -128,6 +128,7 @@ class Whole_list(RequestHit):
                 prod_price = ttt[0].string
                 num.append(prod_num)
                 listproduct.append([prod_num]+[prod_name]+[prod_price])
+
         #
         # for i in listproduct:
         #     a=i[:][0]
@@ -135,9 +136,11 @@ class Whole_list(RequestHit):
 
         return listproduct
 
-
-#
 a=Whole_list()
-a.parser_wholelist()
+#파일 생성
 a.file_write()
+
+
+# 만든 파일 읽어오기
+a.parser_wholelist()
 

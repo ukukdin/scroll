@@ -3,63 +3,140 @@ import pandas as pd
 from bs4 import BeautifulSoup as BS
 import requests
 import datetime
-
+import os
 session = requests.Session()
-loginPage = "https://www.zentrade.co.kr/shop/member/login_ok.php"
-LOGIN_INFO = {
-    "m_id": "hitrend",
-    "password": "!qaz2wsx3edc"
-}
-login_res = session.post(loginPage, data=LOGIN_INFO)
+class out_of_stock():
+    def __init__(self):
+        super(out_of_stock, self).__init__()
 
-Sold_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=40&resale_yn=all'
-login_res = session.get(Sold_out_url)
-html = BS(login_res.text, "html.parser")
-detail = html.select("td table[class=outline_both]")
-ranged = html.findAll("font", attrs={"color":"#000000"})
-def range_num():
-    for i in ranged:
-        num=i.findAll("b")
-        range_num =num[0].string
-    return range_num
-for page in range(int(range_num())):
-    for so in detail:
-        # 상품번호
-            producted_num = so.select("td:nth-of-type(1) font[style^=font] b")
-            prod_num = producted_num[page].string
-            # 상품정보
-            producted_detail = so.select("font a")
-            prod_name = producted_detail[page].string
-            # # 가격
-            priced = so.select("b[class=blue]")
-            prod_price = priced[page].string
+        self.loginPage = "https://www.zentrade.co.kr/shop/member/login_ok.php"
+        self.login_header = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept-Language": "en-US,en;q=0.9,ko;q=0.8",
+            "Cache-Control": "max-age=0",
+            "Connection": "keep-alive",
+            "Content-Length": "77",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cookie": "PHPSESSID=e9o0rmmdnf76i0ehe7597cf126; cookie_check=0; godoLog=20210916; shop_authenticate=Y; _fbp=fb.2.1631754439491.1397331112; Xtime=1631754469; wcs_bt=s_29f5659006d8:1631754472",
+            "Host": "zentrade.co.kr",
+            "Origin": "http://zentrade.co.kr",
+            "Referer": "http://zentrade.co.kr/shop/member/login.php?&",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+        }
+        self.Sold_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=40&resale_yn=all'
+        self.Sold_out_url_header = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept-Language": "en-US,en;q=0.9,ko;q=0.8",
+            "Cache-Control": "max-age=0",
+            "Connection": "keep-alive",
+            "Content-Length": "77",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cookie": "PHPSESSID=e9o0rmmdnf76i0ehe7597cf126; cookie_check=0; godoLog=20210916; shop_authenticate=Y; _fbp=fb.2.1631754439491.1397331112; Xtime=1631754469; wcs_bt=s_29f5659006d8:1631754472",
+            "Host": "zentrade.co.kr",
+            "Origin": "http://zentrade.co.kr",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+        }
+        self.info = {
+            "m_id": "hitrend",
+            "password": "!qaz2wsx3edc"
+        }
+        self.code_mall = 'M0000003'
+        self.name_mall = 'zentrade'
+        self.name_code_mall = 'Out_of_product'
+        self.login_res = session.post(self.loginPage, self.info, self.login_header)
 
-            # # 제고정보
-            outt = so.select("span[style^=background] font")
-            prod_out = outt[page].string
 
-            # # 재입고여부
-            reordered = so.find_all("td", {"height": "50"})
-            reorder = reordered[page].string
 
-            #  제품 품절이유
-            reasoned = so.select("td[align=left] font")
-            reason = reasoned[page].text
+        self.login_res = session.get(self.Sold_out_url)
+        self.mall_category = {
+            '001': '문구/사무용품',
+            '004': '생활용품',
+            '005': '주방/욕실용품',
+            '007': '디지털/자동차',
+            '009': '여행/캠핑/취미',
+            '011': '패션/이미용/건강',
+            '012': '유아동/출산',
+        }
 
-            # 재입고예정일
-            # 재입고 예정일 1번째단
-            delete_dated1 = so.select("tr:nth-child(1) td:nth-of-type(3)")
-            b = []
-            b.append(delete_dated1[1])
-            reorder_dated = so.select("td:nth-of-type(6)")
-            reorder_da = b + reorder_dated
-            reorder_date = reorder_da[page].text
+    def make_directory(self):
+        os.chdir("C:/Users/User")
+        if os.path.isdir("C:/Users/User/outofstock"):
+            pass
+        else:
+            os.mkdir("outofstock")
+    def file_write(self):
+        url = self.Sold_out_url
+        login_res = session.get(url).text
+        self.make_directory()
+        html_file = open(
+            f'./outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall +
+                '.html', 'w', encoding='cp949')
+        html_file.write(login_res)
+        html_file.close()
 
-            # 삭제예정일 첫번째단
-            delete_dated2 = so.select("tr:nth-child(1) td:nth-of-type(4)")
-            delete_dated = so.select("td:nth-of-type(7)")
-            a = []
-            a.append(delete_dated2[1])
-            expire_dated = a + delete_dated
-            expire_date = expire_dated[page].text
 
+
+
+    def outstock(self):
+        stock = []
+        html_file = open(f'./outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall+ '.html', 'r', encoding='cp949')
+        html = BS(html_file, "html.parser")
+        ranged = html.findAll("font", attrs={"color": "#000000"})
+        detail = html.select("td table[class=outline_both]")
+        for i in ranged:
+            num = i.findAll("b")
+            range_num = num[0].string
+
+            for page in range(int(range_num)):
+                for so in detail:
+                     # 상품번호
+                    producted_num = so.select("td:nth-of-type(1) font[style^=font] b")
+                    prod_num = producted_num[page].string
+
+                    # 상품정보
+                    producted_detail = so.select("font a")
+                    prod_name = producted_detail[page].string
+                    # # 가격
+                    priced = so.select("b[class=blue]")
+                    prod_price = priced[page].string
+
+                    # # 제고정보
+                    outt = so.select("span[style^=background] font")
+                    prod_out = outt[page].string
+
+                    # # 재입고여부
+                    reordered = so.find_all("td", {"height": "50"})
+                    reorder = reordered[page].string
+
+                    #  제품 품절이유
+                    reasoned = so.select("td[align=left] font")
+                    reason = reasoned[page].text
+
+
+                    # 재입고예정일
+                    # 재입고 예정일 1번째단
+                    delete_dated1 = so.select("tr:nth-child(1) td:nth-of-type(3)")
+                    b = []
+                    b.append(delete_dated1[1])
+                    reorder_dated = so.select("td:nth-of-type(6)")
+                    reorder_da = b + reorder_dated
+                    reorder_date = reorder_da[page].text
+
+                    # 삭제예정일 첫번째단
+                    delete_dated2 = so.select("tr:nth-child(1) td:nth-of-type(4)")
+                    delete_dated = so.select("td:nth-of-type(7)")
+                    a = []
+                    a.append(delete_dated2[1])
+                    expire_dated = a + delete_dated
+                    expire_date = expire_dated[page].text
+                    stock.append([prod_num]+[prod_name]+[prod_out]+[prod_price]+[reorder]
+                                 +[reorder_date]+[expire_date]+[reason])
+        return stock
+
+a=out_of_stock()
+a.file_write()
+print(a.outstock())

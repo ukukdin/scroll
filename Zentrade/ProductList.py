@@ -1,16 +1,9 @@
 import time
 from bs4 import BeautifulSoup as BS
 import requests
-from Crawling.common.lib_request import RequestHit
-import Crawling.common.util_fileloader as fl
-import Crawling.common.util_common as cu
-from Crawling.mall.lib.data_prodlist import DataMallProdlist
-from Crawling.mall.lib.es_pordlist import DataMallProdlistES
-import random
-import pandas as pd
 import os
 from WholePage import Whole_list as wl
-import html5lib
+
 session = requests.Session()
 class Product_List(wl):
     def __init__(self):
@@ -33,8 +26,8 @@ class Product_List(wl):
 
 
     def make_directory(self):
-        os.chdir("D:/data/")
-        if os.path.isdir("D:/data/prod_list"):
+        os.chdir("C:/Users/User")
+        if os.path.isdir("C:/Users/User/prod_list"):
             pass
         else:
             os.mkdir("prod_list")
@@ -50,7 +43,7 @@ class Product_List(wl):
                     str(No) + '.html', 'w', encoding='cp949')
             html_file.write(login_res)
             html_file.close()
-
+        return str(No)
 
 
     def prod_list(self):
@@ -59,8 +52,8 @@ class Product_List(wl):
         # for num in self.no:
         #     No = num[:][0]
         html_file = open(f'./prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
-                         '4269' + '.html', 'r', encoding='cp949')
-        html = BS(html_file.read, "html.parser")
+                         a.file_write() + '.html', 'r', encoding='cp949')
+        html = BS(html_file, "html.parser")
         itemlist = html.select("div[class=indiv]")
         for detail in itemlist:
             # 카테고리
@@ -72,8 +65,12 @@ class Product_List(wl):
             prod_price = detail.select('span[id=price]')
             # 배송비
             prod_deli = detail.select('tr[height="20"] b')
+            # 원산지/과세여부
+            country_tax = detail.select('tr[height="30"] td')
+
             # 배송디테일
-            deli_detail = detail.select('tr[height="30"] td')
+            deli_detail = detail.select('form[name=frmView] table:nth-of-type(2) font')
+            print(deli_detail)
             # 변동내역
             changelist = detail.select('table[align=center] tr:nth-of-type(2) td')
 
@@ -81,14 +78,15 @@ class Product_List(wl):
             option = detail.select('select[name^=opt]')
             for o in option:
                 option_detail = o.get_text(strip=True).replace("== 옵션선택 ==", "")
-                # 원산지
-            country = deli_detail[0].string
+            # 원산지
+            country = country_tax[0].string
             # 과세여부
-            prod_tax = deli_detail[1].string
-            # 배송디테일
-            deli_detail = deli_detail[0].string
+            prod_tax = country_tax[1].string
+            # # 배송디테일
+            deli_detail1 = deli_detail[0].string
             deli_detail2 = deli_detail[1].string
-            # 가격
+
+            # # 가격
             prod_price = prod_price[0].string
             # 배송비
             deli_price = prod_deli[0].string
@@ -102,11 +100,12 @@ class Product_List(wl):
             changedlist = changelist[0].string
             detail_text = changelist[1].string
             change_data = changelist[2].string
-            prod_detail_list.append([prod_num] + [prod_name] + [category] + [prod_price] +
-                                    [country] + [prod_tax] + [deli_price] + [deli_detail] +
-                                    [deli_detail2] + [option_detail] + [changedlist] + [detail_text] + [change_data])
+            prod_detail_list.append([prod_num] + [prod_name] + [category] + [prod_price]+[country]+[prod_tax]+[deli_detail1]+[deli_detail2]
+                                    +[option_detail]+[changedlist]+[detail_text]+[change_data])
+
 
         return prod_detail_list
 #
 a= Product_List()
+
 a.file_write()
