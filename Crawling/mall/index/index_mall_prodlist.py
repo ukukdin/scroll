@@ -1,8 +1,8 @@
 
 # import onch_info as Info
-import common.util_common as cu
+import Crawling.common.util_common as cu
 from elasticsearch_dsl import Document, Integer, Keyword, connections
-from common.lib_es import LibES
+from Crawling.common.lib_es import LibES
 
 esip = '192.168.0.41:9200'
 # esip = '127.0.0.1:9200'

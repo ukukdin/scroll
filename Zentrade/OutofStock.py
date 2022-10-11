@@ -63,8 +63,8 @@ class out_of_stock():
         }
 
     def make_directory(self):
-        os.chdir("C:/Users/User")
-        if os.path.isdir("C:/Users/User/outofstock"):
+        os.chdir("D:/data/")
+        if os.path.isdir("D:/data/outofstock"):
             pass
         else:
             os.mkdir("outofstock")

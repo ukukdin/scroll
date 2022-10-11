@@ -2,10 +2,9 @@ import time
 from bs4 import BeautifulSoup as BS
 import requests
 from Crawling.common.lib_request import RequestHit
-# import Crawling.common.util_fileloader as fl
-# import Crawling.common.util_common as cu
-# from Crawling.mall.lib.data_prodlist import DataMallProdlist
-# from Crawling.mall.lib.es_pordlist import DataMallProdlistES
+import Crawling.common.util_fileloader as fl
+import Crawling.common.util_common as cu
+from elasticsearch import Elasticsearch
 import random
 import os
 session = requests.Session()
@@ -87,8 +86,8 @@ class Whole_list(RequestHit):
 
     # 폴더 생성
     def make_directory(self):
-        os.chdir("C:/Users/User")
-        if os.path.isdir("C:/Users/User/zentrade"):
+        os.chdir("D:/data/")
+        if os.path.isdir("D:/data/zentrade"):
             pass
         else:
             os.mkdir("zentrade")
@@ -106,10 +105,10 @@ class Whole_list(RequestHit):
     # 페이지 상세 정보 가져오기
     def parser_wholelist(self):
         listproduct = []
-        num=[]
+    
         for page in range(52):
             page =page+1
-            file = open(f'C:/Users/User/zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
+            file = open(f'd:/data/zentrade/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
             html = BS(file.read(),'html.parser')
 
             # html = BS(read.text, "html.parser")
@@ -126,7 +125,7 @@ class Whole_list(RequestHit):
                 # print(ttt)
                 # 상품가격
                 prod_price = ttt[0].string
-                num.append(prod_num)
+
                 listproduct.append([prod_num]+[prod_name]+[prod_price])
 
         #
@@ -134,13 +133,31 @@ class Whole_list(RequestHit):
         #     a=i[:][0]
         #
 
+
         return listproduct
-
 a=Whole_list()
-#파일 생성
-a.file_write()
+# #파일 생성
+# a.file_write()
 
 
-# 만든 파일 읽어오기
+# # 만든 파일 읽어오기
 a.parser_wholelist()
+    # def insertData(self):
+    #     es = Elasticsearch('[192.168.0.41]:9200')
+    #     index = 'WholePage'
+    #
+    #     doc = {
+    #         "prod_num":
+    #     }
 
+
+if __name__ =='__main__':
+    test = 'create_file'
+
+    code_mall="M0000001"
+    mall = Whole_list()
+
+    mall.close_session()
+
+    if test == 'create_file':
+        mall.parser_wholelist()

@@ -46,8 +46,8 @@ class New_List():
         self.login_res = session.post(self.login_url, self.info, self.login_header)
 
     def make_directory(self):
-        os.chdir("C:/Users/User")
-        if os.path.isdir("C:/Users/User/NewProduct"):
+        os.chdir("D:/data/")
+        if os.path.isdir("D:/data/NewProduct"):
               pass
         else:
             os.mkdir("NewProduct")

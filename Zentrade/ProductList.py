@@ -26,8 +26,8 @@ class Product_List(wl):
 
 
     def make_directory(self):
-        os.chdir("C:/Users/User")
-        if os.path.isdir("C:/Users/User/prod_list"):
+        os.chdir("D:/data/")
+        if os.path.isdir("D:/datas/prod_list"):
             pass
         else:
             os.mkdir("prod_list")

@@ -390,8 +390,8 @@ if __name__ == '__main__':
 
     #######################
     test = 'create_file'
-    # test = ' login'
-    # test = 'insert'
+    test = ' login'
+    test = 'insert'
     test = 'search_name'
     # test = 'parsor_one_file'
 
