@@ -23,7 +23,7 @@
         }
       },
       "prod_price" : {
-        "type" : "int"
+        "type" : "integer"
 
 
         }

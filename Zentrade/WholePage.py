@@ -16,34 +16,31 @@ class Whole_list(RequestHit):
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "en-US,en;q=0.9,ko;q=0.8",
-            "Cache-Control": "max-age=0",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
             "Connection": "keep-alive",
-            "Content-Length": "77",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Cookie": "PHPSESSID=e9o0rmmdnf76i0ehe7597cf126; cookie_check=0; godoLog=20210916; shop_authenticate=Y; _fbp=fb.2.1631754439491.1397331112; Xtime=1631754469; wcs_bt=s_29f5659006d8:1631754472",
-            "Host": "zentrade.co.kr",
-            "Origin": "http://zentrade.co.kr",
-            "Referer": "http://zentrade.co.kr/shop/member/login.php?&",
+            "Cookie": "gd_user_enamooPass=XXdndUlRb2NNUmVyRVBJck09My5JUyx0SmdZK01SU3RFQEF0SWRyOw%3D%3D; PHPSESSID=f46862a48c0eaaee9570d7588dd4559f; cookie_check=0; shop_authenticate=Y; zent_login_id=hitrend; Xtime=1665560567",
+            "Host": "www.zentrade.co.kr",
+            "Referer": "https://www.zentrade.co.kr/shop/member/login_ok.php",
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
         }
         # 전체상품
         self.Whole_prod_url = "https://www.zentrade.co.kr/shop/goods/goods_list.php?&page="
         self.Whole_prod_url_header = {
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "en-US,en;q=0.9,ko;q=0.8",
-            "Cache-Control": "max-age=0",
-            "Connection": "keep-alive",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
+                      "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Connection': 'keep-alive',
             "Content-Length": "77",
             "Content-Type": "application/x-www-form-urlencoded",
-            "Cookie": "PHPSESSID=e9o0rmmdnf76i0ehe7597cf126; cookie_check=0; godoLog=20210916; shop_authenticate=Y; _fbp=fb.2.1631754439491.1397331112; Xtime=1631754469; wcs_bt=s_29f5659006d8:1631754472",
-            "Host": "zentrade.co.kr",
+            "Cookie": "gd_user_enamooPass=XXdndUlRb2NNUmVyRVBJck09My5JUyx0SmdZK01ST3dFQGd1SWRyOw%3D%3D; PHPSESSID=218aaf32635ad45cabd4811c93bf84d5; cookie_check=0; zent_main_search_skey=b.goodsno; shop_authenticate=Y; todayGoodsIdx=4269%2C2885%2C; todayGoods=a%3A2%3A%7Bi%3A0%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%224269%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A31%3A%22%BD%C3%BD%BA%B8%C6%BD%BA+%B3%D7%BF%C0+%B5%A5%BD%BA%C5%A9+%BF%C0%B0%C5%B3%AA%C0%CC%C0%FA%22%3Bs%3A5%3A%22price%22%3Bs%3A5%3A%2212150%22%3Bs%3A3%3A%22img%22%3Bs%3A66%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F4269%2F4269_neo_listimg_01.jpg%22%3B%7Di%3A1%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%222885%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A21%3A%22%C4%C4%C6%DB%BD%BA+%B0%A2%B5%B5%B1%E2+%C0%DA+%BC%BC%C6%AE%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%223650%22%3Bs%3A3%3A%22img%22%3Bs%3A73%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F2885%2F2885_compassset_listimg_01.jpg%22%3B%7D%7D; Xtime=1665554313",
+            "Host": "www.zentrade.co.kr",
+            'Referer': 'https://www.zentrade.co.kr/shop/goods/goods_list.php?&',
             "Origin": "http://zentrade.co.kr",
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+            'User-Agent': 'Mozilla / 5.0(Windows NT 10.0;Win64;x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 106.0.0.0 Safari / 537.36'
         }
 
 
@@ -137,11 +134,11 @@ class Whole_list(RequestHit):
         return listproduct
 a=Whole_list()
 # #파일 생성
-# a.file_write()
+a.file_write()
 
 
 # # 만든 파일 읽어오기
-a.parser_wholelist()
+# a.parser_wholelist()
     # def insertData(self):
     #     es = Elasticsearch('[192.168.0.41]:9200')
     #     index = 'WholePage'

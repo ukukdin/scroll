@@ -7,7 +7,9 @@ import requests as req
 import datetime as date
 import Crawling.common.util_common as cu
 
+
 session = requests.Session()
+
 class New_List():
     def __init__(self):
         super(New_List, self).__init__()
@@ -59,7 +61,7 @@ class New_List():
         self.make_directory()
         html_file = open(
             f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'
-            +cu.getDateToday() +'.html', 'w', encoding='cp949')
+            +cu.getDateToday()+'.html', 'w', encoding='cp949')
         html_file.write(login_res)
         html_file.close()
 
@@ -67,14 +69,16 @@ class New_List():
     def NP(self):
 
         file = open(
-            f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +cu.getDateToday() +'.html', 'r', encoding='cp949')
+            f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+cu.getDateToday()+'.html', 'r', encoding='cp949')
         self.html = BS(file.read(), "html.parser")
         self.new_list = self.html.findAll("td", attrs={"bgcolor": "FFD9EC", "height": "40", "id": "b_white",
                                                        "style": "padding-left:15px;"})
         new_product_list=[]
         for i in self.new_list:
             num = i.findAll("b")
+
             prod_num = num[1].string
+
             if prod_num == str(0):
                 print("오늘의 신상품은 없습니다.")
             else:
@@ -92,14 +96,16 @@ class New_List():
                     p = detail[1].select('b')
                     new_prod_price = p[0].string
 
-                    print("가격은:", new_prod_price, '\n'
-                         "제품명", new_prod_name, '\n'
-                         "제품번호", new_prod_num, '\n'
-                          "신상품 등록일", new_prod_date,
-                          '\n')
+                    # print("가격은:", new_prod_price, '\n'
+                    #      "제품명", new_prod_name, '\n'
+                    #      "제품번호", new_prod_num, '\n'
+                    #       "신상품 등록일", new_prod_date,
+                    #       '\n')
                     new_product_list.append([new_prod_num]+[new_prod_name]+[new_prod_date]+[new_prod_price])
         return new_product_list
 
 a = New_List()
+# 파일 불러오기
 a.file_write()
-a.NP()
+# 신상품 있는지 없는지 확인 후 값 가져오는것. 
+

@@ -26,7 +26,7 @@ class DataWholepageIndex(Document):
 
     class Index:
         code = cu.getDateMonth()
-        name = 'wholepage'
+        name = 'newprod'
         setting={
             'number_of_shards':1,
 

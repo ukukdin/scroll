@@ -2,16 +2,41 @@ import time
 from bs4 import BeautifulSoup as BS
 import requests
 import os
-from WholePage import Whole_list as wl
-
+from WholePage import Whole_list
+import Crawling.common.util_common as cu
 session = requests.Session()
-class Product_List(wl):
+class Product_List(Whole_list):
     def __init__(self):
         super(Product_List, self).__init__()
 
-
+        self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
+        self.login_header = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Connection": "keep-alive",
+            "Cookie": "gd_user_enamooPass=XXdndUlRb2NNUmVyRVBJck09My5JUyx0SmdZK01SU3RFQEF0SWRyOw%3D%3D; PHPSESSID=f46862a48c0eaaee9570d7588dd4559f; cookie_check=0; shop_authenticate=Y; zent_login_id=hitrend; Xtime=1665560567",
+            "Host": "www.zentrade.co.kr",
+            "Referer": "https://www.zentrade.co.kr/shop/member/login_ok.php",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
+        }
         self.prodctlist = "https://www.zentrade.co.kr/shop/goods/goods_view.php?goodsno="
-        self.loginPage = "https://www.zentrade.co.kr/shop/member/login_ok.php"
+        self.prodctlist_url_header = {
+             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
+                       "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Connection': 'keep-alive',
+            'Host': 'www.zentrade.co.kr',
+            "Cookie":"PHPSESSID=f46862a48c0eaaee9570d7588dd4559f; shop_authenticate=Y; zent_login_id=hitrend; cookie_check=0",
+            'Referer': 'https://www.zentrade.co.kr/shop/goods/goods_list.php?&',
+            "Origin": "http://zentrade.co.kr",
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla / 5.0(Windows NT 10.0;Win64;x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 106.0.0.0 Safari / 537.36'
+            }
+
+
         self.info = {
             "m_id": "hitrend",
             "password": "!qaz2wsx3edc"
@@ -19,40 +44,44 @@ class Product_List(wl):
         self.code_mall = 'M0000002'
         self.name_mall = 'zentrade'
         self.name_code_mall = 'Detail_List'
-        self.login_res = session.post(self.login_url, self.info, self.login_header)
-        # self.h = 'd:/date/zentrade'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_10.html'
-        # print(self.h)
-        # self.file = pd.read_html(self.h,encoding='cp949')
+
+        # 로그인
+        self.login_res = session.post(self.login_url, self.info,self.login_header)
+
 
 
     def make_directory(self):
         os.chdir("D:/data/")
-        if os.path.isdir("D:/datas/prod_list"):
+        if os.path.isdir("D:/data/prod_list"):
             pass
         else:
             os.mkdir("prod_list")
+
     # 파일 만들어서 저장하기
     def file_write(self):
-        self.no = wl().parser_wholelist()
+        self.no = Whole_list().parser_wholelist()
         for num in self.no:
             No = num[:][0]
+
             url = self.prodctlist+str(No)+"&category="
-            login_res = session.get(url).text
+            login_res = session.get(url,headers=self.prodctlist_url_header).text
             self.make_directory()
             html_file = open(f'./prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
                     str(No) + '.html', 'w', encoding='cp949')
+
             html_file.write(login_res)
+
             html_file.close()
+
         return str(No)
+
 
 
     def prod_list(self):
         prod_detail_list = []
-        # self.no = wl().parser_wholelist()
-        # for num in self.no:
-        #     No = num[:][0]
-        html_file = open(f'./prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
-                         a.file_write() + '.html', 'r', encoding='cp949')
+
+
+        html_file = open(f'd:/data/prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+a.file_write()+'.html', 'r', encoding='cp949')
         html = BS(html_file, "html.parser")
         itemlist = html.select("div[class=indiv]")
         for detail in itemlist:
@@ -70,7 +99,7 @@ class Product_List(wl):
 
             # 배송디테일
             deli_detail = detail.select('form[name=frmView] table:nth-of-type(2) font')
-            print(deli_detail)
+
             # 변동내역
             changelist = detail.select('table[align=center] tr:nth-of-type(2) td')
 
@@ -81,7 +110,7 @@ class Product_List(wl):
             # 원산지
             country = country_tax[0].string
             # 과세여부
-            prod_tax = country_tax[1].string
+            prod_tax = country_tax[1].string.replace('\n','')
             # # 배송디테일
             deli_detail1 = deli_detail[0].string
             deli_detail2 = deli_detail[1].string
@@ -107,5 +136,6 @@ class Product_List(wl):
         return prod_detail_list
 #
 a= Product_List()
-
+# a.__init__()
 a.file_write()
+# a.prod_list()
