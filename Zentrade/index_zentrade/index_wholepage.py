@@ -8,13 +8,13 @@ connections.create_connection(hosts=[esip])
 
 class DataWholepageIndex(Document):
     # 코드명 이름
-    # code_mall = Keyword()
-    # # 몰 이름
-    # name_mall = Keyword()
-    # # 몰 코드명
-    # name_code_mall = Keyword()
-    # # 카테고리
-    # mall_category = Keyword()
+    code_mall = Keyword()
+    # 몰 이름
+    name_mall = Keyword()
+    # 몰 코드명
+    name_code_mall = Keyword()
+    # 카테고리
+    mall_category = Keyword()
     # 상품명
     prod_num = Keyword()
     # 상품이름
@@ -23,6 +23,17 @@ class DataWholepageIndex(Document):
     prod_price = Integer()
     # 상품전체 URL
     # Whole_prod_url = Keyword()
+    # 재고여부
+    prod_out = Keyword()
+    # 품절 이유
+    reason = Text()
+    # 재입고 여부
+    reorder = Text()
+    # 재입고 예정일
+    reorder_date = Text()
+    # 삭제예정일
+    expire_date = Text()
+
 
     class Index:
         code = cu.getDateMonth()

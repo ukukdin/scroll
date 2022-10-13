@@ -69,7 +69,7 @@ class Chaesiknara(RequestHit):
             "Connection": "keep-alive",
             "Content-Length": "77",
             "Content-Type": "application/x-www-form-urlencoded",
-            "Cookie": "PHPSESSID=e9o0rmmdnf76i0ehe7597cf126; cookie_check=0; godoLog=20210916; shop_authenticate=Y; _fbp=fb.2.1631754439491.1397331112; Xtime=1631754469; wcs_bt=s_29f5659006d8:1631754472",
+            "Cookie": "PHPSESSID=ufnrduk8m51c6fudjg2vapelo5; godoLog=20221013; shop_authenticate=Y; cookie_check=0; Xtime=1665636356; wcs_bt=s_29f5659006d8:1665636357",
             "Host": "chaesiknara.co.kr",
             "Origin": "http://chaesiknara.co.kr",
             "Referer": "http://chaesiknara.co.kr/shop/member/login.php?&",
@@ -84,7 +84,7 @@ class Chaesiknara(RequestHit):
             "Accept-Language": "en-US,en;q=0.9,ko;q=0.8",
             "Cache-Control": "max-age=0",
             "Connection": "keep-alive",
-            "Cookie": "PHPSESSID=e9o0rmmdnf76i0ehe7597cf126; godoLog=20210916; shop_authenticate=Y; _fbp=fb.2.1631754439491.1397331112; todayGoodsIdx=558%2C2021%2C340%2C; todayGoods=a%3A3%3A%7Bi%3A0%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A3%3A%22558%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A76%3A%22%BB%E7%B0%FA%BE%C6%BB%E8+120g%2A5%B0%B3+%2B+%B9%E8%BE%C6%BB%E8+120g%2A5%B0%B3+%2F10%B0%B3%BC%BC%C6%AE+%2F%B9%AB%BB%F6%BC%D2%2C%B9%AB%C3%B7%B0%A1%B9%B0%2F%B1%B9%B3%BB%BB%EA+%B0%FA%C0%CF%C1%F3%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%229900%22%3Bs%3A3%3A%22img%22%3Bs%3A19%3A%221432900614537s0.png%22%3B%7Di%3A1%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%222021%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A83%3A%22%BC%F6%C1%A6+%BA%F1%B0%C7+%BF%E4%B0%C5%C6%AE+%BE%C6%C0%CC%BD%BA%C5%A9%B8%B2+VEGAN+YOGURT+ICECREAM+-+%B9%D9%B4%D2%B6%F3%B8%C0+750ml+X+1%C6%D1+dairy+free%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%229500%22%3Bs%3A3%3A%22img%22%3Bs%3A19%3A%221631076025125s0.jpg%22%3B%7Di%3A2%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A3%3A%22340%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A65%3A%229%B9%F8+%B1%B8%BF%EE+%BC%B1%BC%D6+%BA%D3%C0%BA%BA%FB+%C1%D7%BF%B0%28%BA%D0%B8%BB%29+110g+9+baked+Bamboo+salt+%28powder%29%22%3Bs%3A5%3A%22price%22%3Bs%3A5%3A%2238000%22%3Bs%3A3%3A%22img%22%3Bs%3A19%3A%221374110934527s0.jpg%22%3B%7D%7D; cookie_check=0; Xtime=1631758809; wcs_bt=s_29f5659006d8:1631758812",
+            "Cookie": "zent_login_id=hitrend; PHPSESSID=12efce5a2457f686a5ac4fc32496e07d; shop_authenticate=Y; zent_main_search_skey=b.goodsno; gd_user_enamooPass=XXdndUlRb2NNUmVyRVBJck09My5JUyx0SmdZK01oRy5FdlUxSWRyOw%3D%3D; todayGoodsIdx=4269%2C4263%2C4264%2C13%2C924%2C2464%2C4268%2C4267%2C; todayGoods=a%3A8%3A%7Bi%3A0%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%224269%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A31%3A%22%BD%C3%BD%BA%B8%C6%BD%BA+%B3%D7%BF%C0+%B5%A5%BD%BA%C5%A9+%BF%C0%B0%C5%B3%AA%C0%CC%C0%FA%22%3Bs%3A5%3A%22price%22%3Bs%3A5%3A%2212150%22%3Bs%3A3%3A%22img%22%3Bs%3A66%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F4269%2F4269_neo_listimg_01.jpg%22%3B%7Di%3A1%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%224263%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A24%3A%22%C4%BF%C7%C3%B8%B5+%BD%CA%C0%DA%B0%A1%B7%CE+%BC%F6%B5%B5%B2%C0%C1%F6%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%226840%22%3Bs%3A3%3A%22img%22%3Bs%3A69%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F4263%2F4263_faucet_listimg_01.jpg%22%3B%7Di%3A2%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%224264%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A20%3A%224P+%B8%B6%C5%B0+%B0%E8%B7%AE%BD%BA%C7%AC%BC%BC%C6%AE%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%221880%22%3Bs%3A3%3A%22img%22%3Bs%3A78%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F4264%2F4264_measuring_spoon_listimg_01.jpg%22%3B%7Di%3A3%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A2%3A%2213%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A13%3A%22%BE%C8%C5%D7%B3%AA+%C8%BF%C0%DA%BC%D5%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%221310%22%3Bs%3A3%3A%22img%22%3Bs%3A70%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F13%2F13_antennaback_listimg_01.jpg%22%3B%7Di%3A4%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A3%3A%22924%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A24%3A%22ZSM+%C0%AF%B7%E1%B9%F6%C0%FC+30%C0%CF+%C0%CC%BF%EB%B1%C7%22%3Bs%3A5%3A%22price%22%3Bs%3A5%3A%2255000%22%3Bs%3A3%3A%22img%22%3Bs%3A19%3A%221589269100547s0.jpg%22%3B%7Di%3A5%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%222464%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A32%3A%22%C4%C3%B7%AF+%C0%DA%B9%D9%B6%F3+%B9%CC%B4%CF+%BD%BA%B8%B6%C6%AE%C6%F9+%BB%EF%B0%A2%B4%EB%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%221790%22%3Bs%3A3%3A%22img%22%3Bs%3A69%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F2464%2F2464_tripod_listimg_01.jpg%22%3B%7Di%3A6%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%224268%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A17%3A%22%BF%F8%C5%CD%C4%A1+%BC%F6%B5%B5%BF%AC%B0%E1%B1%E2%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%224030%22%3Bs%3A3%3A%22img%22%3Bs%3A78%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F4268%2F4268_waterconnection_listimg_01.jpg%22%3B%7Di%3A7%3Ba%3A4%3A%7Bs%3A7%3A%22goodsno%22%3Bs%3A4%3A%224267%22%3Bs%3A7%3A%22goodsnm%22%3Bs%3A17%3A%22%C8%B8%C0%FC%BD%C4+%C8%A3%BD%BA%BF%AC%B0%E1%B1%E2%22%3Bs%3A5%3A%22price%22%3Bs%3A4%3A%221830%22%3Bs%3A3%3A%22img%22%3Bs%3A78%3A%22http%3A%2F%2Fzentrade.hgodo.com%2Fproductimgs%2F4267%2F4267_hose_connection_listimg_01.jpg%22%3B%7D%7D; cookie_check=0; Xtime=1665636816",
             "Host": "chaesiknara.co.kr",
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
@@ -390,9 +390,9 @@ if __name__ == '__main__':
 
     #######################
     test = 'create_file'
-    # test = ' login'
-    # test = 'insert'
-    # test = 'search_name'
+    test = ' login'
+    test = 'insert'
+    test = 'search_name'
     # test = 'parsor_one_file'
 
     #######################

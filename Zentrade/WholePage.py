@@ -2,16 +2,15 @@ import time
 from bs4 import BeautifulSoup as BS
 import requests
 from Crawling.common.lib_request import RequestHit
-import Crawling.common.util_fileloader as fl
-import Crawling.common.util_common as cu
-from elasticsearch import Elasticsearch
-import random
+from index_zentrade import zen_lib_es
+
+from Zentrade.libara.zen_data import DataZenProduct
 import os
 session = requests.Session()
 class Whole_list(RequestHit):
     def __init__(self):
         super(Whole_list, self).__init__()
-
+        self.abc = zen_lib_es.DataMallProdList
 
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
@@ -19,7 +18,7 @@ class Whole_list(RequestHit):
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
             "Connection": "keep-alive",
-            "Cookie": "gd_user_enamooPass=XXdndUlRb2NNUmVyRVBJck09My5JUyx0SmdZK01SU3RFQEF0SWRyOw%3D%3D; PHPSESSID=f46862a48c0eaaee9570d7588dd4559f; cookie_check=0; shop_authenticate=Y; zent_login_id=hitrend; Xtime=1665560567",
+            "Cookie": " zent_login_id=hitrend; PHPSESSID=12efce5a2457f686a5ac4fc32496e07d; shop_authenticate=Y; cookie_check=0; zent_main_search_skey=b.goodsno; gd_user_enamooPass=XXdndUlRb2NNUmVyRVBJck09My5JUyx0SmdZK01oRy5FdlUxSWRyOw%3D%3D; Xtime=1665635370;",
             "Host": "www.zentrade.co.kr",
             "Referer": "https://www.zentrade.co.kr/shop/member/login_ok.php",
             "Upgrade-Insecure-Requests": "1",
@@ -119,7 +118,7 @@ class Whole_list(RequestHit):
                 # 상품명
                 prod_name = tt[3].string
                 ttt = productList.select('b')
-                # print(ttt)
+
                 # 상품가격
                 prod_price = ttt[0].string
 
@@ -132,25 +131,18 @@ class Whole_list(RequestHit):
 
 
         return listproduct
-a=Whole_list()
-# #파일 생성
-a.file_write()
-
-
+# a=Whole_list()
+# # #파일 생성
+# a.file_write()
+#
+# a.parser_wholelist()
 # # 만든 파일 읽어오기
 # a.parser_wholelist()
-    # def insertData(self):
-    #     es = Elasticsearch('[192.168.0.41]:9200')
-    #     index = 'WholePage'
-    #
-    #     doc = {
-    #         "prod_num":
-    #     }
 
 
 if __name__ =='__main__':
-    test = 'create_file'
-
+    # test = 'create_file'
+    test = 'search_name'
     code_mall="M0000001"
     mall = Whole_list()
 
@@ -158,3 +150,13 @@ if __name__ =='__main__':
 
     if test == 'create_file':
         mall.parser_wholelist()
+
+    if test == 'search_name':
+        malle = zen_lib_es.DataMallProdList()
+        mall_code_res = malle.search_prod_num()
+        print('mall_code : ', mall_code_res)
+        all_data = malle.result_one_data1(mall_code_res)
+
+        for it in all_data:
+            print(it.get_data_dict1())
+        print('len : ', len(all_data))

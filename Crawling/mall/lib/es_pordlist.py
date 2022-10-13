@@ -63,7 +63,6 @@ class DataMallProdlistES(LibES):
             prod_list.name_code_mall = item['_source']['name_code_mall']
             prod_list.prod_category = item['_source']['prod_category']
             prod_list.prod_category_name = item['_source']['prod_category_name']
-            prod_list.prodlist_url = item['_source']['prodlist_url']
 
             prod_list.code_prod_hit = item['_source']['code_prod_hit']
             prod_list.code_prod_origin = item['_source']['code_prod_origin']
