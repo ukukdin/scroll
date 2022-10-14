@@ -2,7 +2,7 @@ import time
 from bs4 import BeautifulSoup as BS
 import requests
 import os
-from WholePage import Whole_list
+from p import Whole_list
 import Crawling.common.util_common as cu
 import New_prod as Np
 session = requests.Session()

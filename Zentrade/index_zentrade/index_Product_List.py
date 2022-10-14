@@ -14,7 +14,7 @@ class DataProductListIndex(Document):
     # 몰 코드명
     name_code_mall = Keyword()
     # 카테고리
-    mall_category = Keyword()
+    category = Keyword()
     # 상품명
     prod_num = Keyword()
     # 상품이름
@@ -27,11 +27,13 @@ class DataProductListIndex(Document):
     country = Keyword()
     # 과세여부
     prod_tax = Text()
+
     # 배송비
     deli_price = Integer()
     # 배송 디테일
     deli_detail1 = Text()
     deli_detail2 =Text()
+    option = Text()
     # 변동내용: 변경항목,상세내용,변경일시
     changedlist = Text()
     detail_tax = Text()
@@ -39,7 +41,7 @@ class DataProductListIndex(Document):
 
     class Index:
         code = cu.getDateMonth()
-        name = 'productlist'
+        name = 'prodlist'
         setting={
             'number_of_shards':1,
 
@@ -50,7 +52,7 @@ class DataProductListIndex(Document):
 
 
 if __name__ == '__main__':
-    re_index_name = 'productlist'
+    re_index_name = 'prodlist'
 
     # delete index
     libes = LibES()

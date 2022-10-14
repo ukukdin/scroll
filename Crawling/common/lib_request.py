@@ -34,7 +34,7 @@ class RequestHit:
             resp = self.sess.post(url, data=info, headers=header)
             # print('##', resp.text)
             if resp.status_code == 200:
-                # print(resp.status_code)
+                print(resp.status_code)
                 pass
             else:
                 print('ERROR : req_post')
@@ -91,7 +91,7 @@ class RequestHit:
             resp = self.sess.get(url, timeout=30)
             if resp.status_code == 200:
                 pass
-                # print(resp.status_code)
+                print(resp.status_code)
             else:
                 print('ERROR : req_get_noheader')
                 resp = ''

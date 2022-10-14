@@ -128,7 +128,7 @@ class Chaesiknara(RequestHit):
     #########################
     # login
     def mall_login(self):
-        resp = self.request_post(self.login_url, self.login_header, self.info)
+        resp = self.request_post_noheader(self.login_url, self.info)
         print(resp.text)
 
     # Request URL, 코드별 각 페이지의 상품리스트 html 파일을 저장한다.
@@ -137,7 +137,7 @@ class Chaesiknara(RequestHit):
         tmp_url = self.prodlist_url.format(code)
 
         # request
-        resp = self.request_get(tmp_url, self.prodlist_header)
+        resp = self.request_get_noheader(tmp_url)
         # print(resp.text)
 
         # create file
@@ -391,8 +391,8 @@ if __name__ == '__main__':
     #######################
     test = 'create_file'
     test = ' login'
-    test = 'insert'
-    test = 'search_name'
+    # test = 'insert'
+    # test = 'search_name'
     # test = 'parsor_one_file'
 
     #######################
@@ -412,7 +412,7 @@ if __name__ == '__main__':
 
     # insert
     if test == 'insert':
-        filename = 'CHAES_062_20220913.html'
+        filename = 'CHAES_062_20221013.html'
         mall.parsor_one_file(filename)
 
     if test == 'search_name':

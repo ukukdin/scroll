@@ -115,10 +115,10 @@ def windowDataPath(path=None):
 def getDataPath(path):
     plat = platform.system()
     if plat == 'Windows':
-        filePath = 'd://data/' + path + '/'
+        filePath = 'd:/data/' + path +'/'
         createFolder(filePath)
     else:
-        filePath = '/Users/SON/data/' + path + '/'
+        filePath = '/Users/SON/data/' + path+'/'
     return filePath
 
 
@@ -148,7 +148,7 @@ def get_home_download_path():
 def getFilePath(gubun, path):
     plat = platform.system()
     if plat == 'Windows':
-        filePath = getDataPath(gubun) + path + '/'
+        filePath = getDataPath(gubun) + path +'/'
         createFolder(filePath)
     else:
         filePath = getDataPath(gubun) + path + '/'

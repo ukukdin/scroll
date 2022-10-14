@@ -109,4 +109,4 @@ a = New_List()
 # a.file_write()
 # 신상품 있는지 없는지 확인 후 값 가져오는것. 
 
-a.NP()
+# a.NP()
