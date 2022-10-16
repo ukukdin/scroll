@@ -1,8 +1,11 @@
 import time
 from bs4 import BeautifulSoup as BS
 import requests
+from bs4 import BeautifulSoup
+
 from Crawling.common.lib_request import RequestHit
-from Zentrade.index_zentrade import zen_lib_es
+
+import Crawling.common.util_fileloader as fl
 import os
 session = requests.Session()
 class Whole_list(RequestHit):
@@ -64,16 +67,17 @@ class Whole_list(RequestHit):
             '012':'유아동/출산',
         }
     # login
-
-        self.login_res = session.post(self.login_url,self.info)
+    def mall_login(self):
+        login_res = session.post(self.login_url,self.info)
+        print(login_res.text)
 
     # 폴더 생성
     def make_directory(self):
-        os.chdir("D:/data/")
+        os.chdir("D:/data")
         if os.path.isdir("D:/data/"+self.gubun+'/'+self.path):
             pass
         else:
-            os.mkdir('./'+self.gubun+'/'+self.path)
+            os.makedirs("./"+self.gubun+'/'+self.path)
             
     # 파일 만들어서 저장
     def file_write(self):
@@ -113,46 +117,57 @@ class Whole_list(RequestHit):
 
                 listproduct.append([prod_num]+[prod_name]+[prod_price])
 
-
+        # print(listproduct)
         return listproduct
 
+    def parsor_one_file(self, filename):
+        from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
+        self.mall_es = DataMallProdList()
 
-whole=Whole_list()
- #파일 생성
-# a.file_write()
+        fpath = fl.getFilePath(self.gubun, self.path)
+        print(fpath)
+        print(filename)
+        mall_es = DataMallProdList()
+        # read : file name
+        readdat = fl.readFileName(fpath, filename)
+        soup = BeautifulSoup(readdat, 'lxml')
 
-# a.parser_wholelist()
+        # parsor - 파일의 모든 상품 data class
+        file_prod_list = self.parser_wholelist(filename, soup)
+        self.mall_es.insertProdlistES(file_prod_list)
+
+
+
 if __name__ == '__main__':
-
-    #######################
-    test = 'create_file'
-    test = ' login'
+    from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
+#
+#     #######################
+#     # test = 'create_file
+#     # test = ' login'
     test = 'insert'
-    test = 'search_name'
-    # test = 'parsor_one_file'
-
+#     # test = 'search_name'
+#     # test = 'parsor_one_file'
+#     #######################
+#     name = "시스맥스"
+    whole = Whole_list()
     #######################
-    name = "시스맥스"
+    # if test == 'create_file':
+    #     whole.file_write()
+    # # login
+    # if test == 'login':
+    #     whole.mall_login()
+    # # insert
+    if test == 'insert' :
+       DataMallProdList().insertbulk_whole()
 
-    #######################
-    if test == 'create_file':
-        mall.get_prodlist()
-    # login
-    if test == 'login':
-        mall.mall_login()
-    # insert
-    if test == 'insert':
-        filename = 'CHAES_062_20220913.html'
-        mall.parsor_one_file(filename)
-
-    if test == 'search_name':
-        malles = DataMallProdlistES()
-        mall_code_res = malles.search_mall_code()
-        print('mall_code : ', mall_code_res)
-        all_data = malles.result_all_data(mall_code_res)
-        for it in all_data:
-            print(it.get_data_dict())
-        print('len : ', len(all_data))
-    #######################
-    # sess close
-    mall.close_session()
+    # if test == 'search_name':
+    #     malles = DataMallProdlistES()
+    #     mall_code_res = malles.search_mall_code()
+    #     print('mall_code : ', mall_code_res)
+    #     all_data = malles.result_all_data(mall_code_res)
+    #     for it in all_data:
+    #         print(it.get_data_dict())
+    #     print('len : ', len(all_data))
+    # #######################
+    # # sess close
+#     whole.close_session()

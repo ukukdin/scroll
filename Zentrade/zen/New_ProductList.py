@@ -2,9 +2,9 @@ import time
 from bs4 import BeautifulSoup as BS
 import requests
 import os
-from p import Whole_list
+from Product_list import Whole_list
 import Crawling.common.util_common as cu
-import New_prod as Np
+import New_product as Np
 session = requests.Session()
 class Product_List(Whole_list):
     def __init__(self):
@@ -63,7 +63,6 @@ class Product_List(Whole_list):
     def file_write(self):
         # 신상품 있을때 값 가져와서 진행
         self.no = self.new_prod = Np.New_List().NP()
-
         for num in self.no:
             No = num[:][0]
             url = self.prodctlist+str(No)+"&category="
@@ -71,19 +70,14 @@ class Product_List(Whole_list):
             self.make_directory()
             html_file = open(f'./new_prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
                     str(No) + '.html', 'w', encoding='cp949')
-
             html_file.write(login_res)
-
             html_file.close()
-
         return str(No)
 
 
 
     def new_prod_list(self):
         new_prod_detail_list = []
-
-
         html_file = open(f'd:/data/new_prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+a.file_write()+'.html', 'r', encoding='cp949')
         html = BS(html_file, "html.parser")
         itemlist = html.select("div[class=indiv]")
@@ -128,12 +122,11 @@ class Product_List(Whole_list):
             prod_name = prod_name[0].string
             # 상품번호
             prod_num = prod_num[1].string
-            print(prod_num)
             # 변동내용(변경항목,상세내용,변경일시)
             changedlist = changelist[0].string
             detail_text = changelist[1].string
             change_data = changelist[2].string
-            new_prod_detail_list.append([prod_num] + [prod_name] + [category] + [prod_price]+[country]+[prod_tax]+[deli_price][deli_detail1]+[deli_detail2]
+            new_prod_detail_list.append([prod_num] + [prod_name] + [category] + [prod_price]+[country]+[prod_tax]+[deli_price]+[deli_detail1]+[deli_detail2]
                                     +[option_detail]+[changedlist]+[detail_text]+[change_data])
 
         print(new_prod_detail_list)
@@ -141,5 +134,5 @@ class Product_List(Whole_list):
 #
 a= Product_List()
 # a.__init__()
-# a.file_write()
-a.new_prod_list()
+a.file_write()
+# a.new_prod_list()

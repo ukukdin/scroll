@@ -134,6 +134,6 @@ class out_of_stock():
 
         return stock
 
-a=out_of_stock()
+# a=out_of_stock()
 # a.file_write()
 # print(a.outstock())

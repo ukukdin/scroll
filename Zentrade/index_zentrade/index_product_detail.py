@@ -3,7 +3,7 @@ import Crawling.common.util_common as cu
 from Crawling.common.lib_es import LibES
 
 
-esip ='192.168.0.41:9200'
+esip ='127.0.0.1:9200'
 connections.create_connection(hosts=[esip])
 
 class DataProductListIndex(Document):
@@ -37,29 +37,55 @@ class DataProductListIndex(Document):
     # 변동내용: 변경항목,상세내용,변경일시
     changedlist = Text()
     detail_tax = Text()
+    # 상품 등록일
     change_dete =Text()
 
+    # 상세 상품 인덱스
     class Index:
         code = cu.getDateMonth()
-        name = 'prodlist'
+        name = 'productdetail'
         setting={
             'number_of_shards':1,
 
         }
+    # 신상품 상세  인덱스
+    # class Index:
+    #     code = cu.getDateMonth()
+    #     name = 'new_proddetail'
+    #     setting = {
+    #         'number_of_shards': 1,
+    #
+    #     }
 
     def save(self, **kwargs):
         return super(DataProductListIndex, self).save(**kwargs)
 
 
 if __name__ == '__main__':
-    re_index_name = 'prodlist'
+    re_index_name = 'productdetail'
+    # re_index_name = 'new_proddetail'
 
-    # delete index
-    libes = LibES()
-    libes.deleteIndex(re_index_name)
-    print(re_index_name + ': delete index!')
 
-    # create Index
-    DataProductListIndex()
-    DataProductListIndex.init()
-    print(re_index_name + " : create index! done")
+
+    if re_index_name == 'productdetail':
+        # delete index
+        libes = LibES()
+        libes.deleteIndex(re_index_name)
+        print(re_index_name + ': delete index!')
+
+        # 상품 상세 리스트 인덱스 생성
+        # create prodlist index
+        DataProductListIndex()
+        DataProductListIndex.init()
+        print(re_index_name + " : create index! done")
+
+    if re_index_name == 'new_proddetail':
+        # delete index
+        libes = LibES()
+        libes.deleteIndex(re_index_name)
+        print(re_index_name + ': delete index!')
+
+    # 신 상품 상세 리스트 인덱스 생성
+        DataProductListIndex()
+        DataProductListIndex.init()
+        print(re_index_name + " : create index! done")

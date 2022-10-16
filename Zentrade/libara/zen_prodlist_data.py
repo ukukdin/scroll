@@ -1,4 +1,4 @@
-
+# 상세 상품 리스트 + 상세 신상품 리스트
 class DataZenProductList:
     def __init__(self):
         self.data_dict = {}
