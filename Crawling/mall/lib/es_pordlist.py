@@ -3,7 +3,7 @@ from typing import List, Any
 
 from Crawling.common.lib_es import LibES
 from elasticsearch import helpers
-from Crawling.mall.lib.data_prodlist import DataMallProdlist
+
 
 class DataMallProdlistES(LibES):
     def __init__(self):
@@ -14,11 +14,13 @@ class DataMallProdlistES(LibES):
     def insertProdlistES(self, onedat):
         newDoc = []
         for linedat in onedat:
+
             onedoc = linedat.get_data_dict()
             # print('onedoc : ', onedoc)
 
             doc = {'_index': self.indexname, '_source': onedoc}
             # print(doc)
+
             newDoc.append(doc)
         helpers.bulk(self.es, newDoc, index=self.indexname)
 
@@ -56,7 +58,7 @@ class DataMallProdlistES(LibES):
         all_data_model = []
         for item in res['hits']['hits']:
             # class
-            prod_list = DataMallProdlist()
+            prod_list = DataMallProdlistES()
             prod_list.timestamp = item['_source']['@timestamp']
             prod_list.code_mall = item['_source']['code_mall']
             prod_list.name_mall = item['_source']['name_mall']
@@ -85,7 +87,7 @@ class DataMallProdlistES(LibES):
 
     def result_one_data(self, item):
         # class
-        prod_list = DataMallProdlist()
+        prod_list = DataMallProdlistES()
         prod_list.timestamp = item['_source']['@timestamp']
         prod_list.code_mall = item['_source']['code_mall']
         prod_list.name_mall = item['_source']['name_mall']

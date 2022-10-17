@@ -159,6 +159,7 @@ class Chaesiknara(RequestHit):
             # print(num , ' : ########################' )
 
             file_prod_list.append(self.parsor_one_prod(filename, it))
+        # print(file_prod_list)
         return file_prod_list
 
     def parsor_one_prod(self, filename, dat):
@@ -350,7 +351,7 @@ class Chaesiknara(RequestHit):
         print('total : ', len(self.flist_prodlist))
 
         for num, fit in enumerate(self.flist_prodlist):
-            print('name : ', fit)
+            # print('name : ', fit)
             # read : file name
             readdat = fl.readFileName(self.fpath_prodlist, fit)
             soup = BeautifulSoup(readdat, 'lxml')
@@ -386,12 +387,13 @@ class Chaesiknara(RequestHit):
         file_prod_list = self.parser_prodlist(filename, soup)
         self.malles.insertProdlistES(file_prod_list)
 
+
 if __name__ == '__main__':
 
     #######################
     test = 'create_file'
     test = ' login'
-    # test = 'insert'
+    test = 'insert'
     # test = 'search_name'
     # test = 'parsor_one_file'
 

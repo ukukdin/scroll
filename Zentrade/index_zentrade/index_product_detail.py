@@ -3,7 +3,7 @@ import Crawling.common.util_common as cu
 from Crawling.common.lib_es import LibES
 
 
-esip ='127.0.0.1:9200'
+esip ='192.168.0.41:9200'
 connections.create_connection(hosts=[esip])
 
 class DataProductListIndex(Document):
@@ -37,7 +37,7 @@ class DataProductListIndex(Document):
     # 변동내용: 변경항목,상세내용,변경일시
     changedlist = Text()
     detail_tax = Text()
-    # 상품 등록일
+    # 상품 등록 변경 일시
     change_dete =Text()
 
     # 상세 상품 인덱스
@@ -46,7 +46,6 @@ class DataProductListIndex(Document):
         name = 'productdetail'
         setting={
             'number_of_shards':1,
-
         }
     # 신상품 상세  인덱스
     # class Index:

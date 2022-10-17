@@ -3,7 +3,7 @@ import Crawling.common.util_common as cu
 from Crawling.common.lib_es import LibES
 
 
-esip ='127.0.0.1:9200'
+esip ='192.168.0.41:9200'
 connections.create_connection(hosts=[esip])
 
 class DataWholepageIndex(Document):
@@ -43,7 +43,7 @@ class DataWholepageIndex(Document):
     #         'number_of_shards':1,
     #
     #     }
-    #
+
     class Index:
         code = cu.getDateMonth()
         name = 'newproductlist'
@@ -56,9 +56,6 @@ class DataWholepageIndex(Document):
     #     code = cu.getDateMonth()
     #     name = 'product'
     #     doc_type = 'outofproduct'
-    #     doc = {
-    #         ''
-    #     }
     #     setting = {
     #         'number_of_shards': 1,
     #
@@ -73,8 +70,8 @@ if __name__ == '__main__':
     # re_index_name = 'productlist'
     # 신상품 리스트
     re_index_name = 'newproductlist'
-    # 품절 리스트
-    # re_index_name = 'product'
+    # # 품절 리스트
+    # re_index_name = 'out_of_product'
     # 상품 리스트1
     if re_index_name =='productlist':
         # delete index
@@ -100,7 +97,7 @@ if __name__ == '__main__':
         print(re_index_name + " : create index! done")
 
     # 품절 리스트
-    if re_index_name == 'product' :
+    if re_index_name == 'out_of_product' :
         # delete index
         libes = LibES()
         libes.deleteIndex(re_index_name)

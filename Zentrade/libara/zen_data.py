@@ -30,7 +30,8 @@ class DataZenProduct:
 
         # 품절이유
         self.reason = None
-
+        # 입고 날짜
+        self.prod_date = None
         # 재입고 여부
         self.reorder = None
 

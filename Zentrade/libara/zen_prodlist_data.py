@@ -24,7 +24,7 @@ class DataZenProductList:
 
         # 상품가격
         self.prod_price = None
-
+        self.prod_date = None
         # 원산지
         self.country = None
 
@@ -65,6 +65,7 @@ class DataZenProductList:
             'prod_name':self.prod_name,
             #상품가격
             'prod_price':self.prod_price,
+            'prod_date':self.prod_date,
             # 원산지
             'country': self.country,
             # 과세여부

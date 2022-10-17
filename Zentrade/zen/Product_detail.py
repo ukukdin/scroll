@@ -88,10 +88,9 @@ class Product_List():
         file_list = os.listdir(path)
         filename = [file for file in file_list if file.endswith('.html') ]
         for file in filename:
-            self.html_file = open(f'd:/data/prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
-                             '924' + '.html', 'r', encoding='cp949')
+            self.html_file = open(f'd:/data/prod_list/'
+                                  +file,  'r', encoding='cp949')
             html = BS(self.html_file, "html.parser")
-
             itemlist = html.select("div[class=indiv]")
             for detail in itemlist:
                 # 카테고리
@@ -114,7 +113,6 @@ class Product_List():
                 changelist = detail.select('table[align=center] tr:nth-of-type(2) td')
                 # 변동내역
 
-
                 # # 옵션정보
                 # option1 = detail.findAll('table',attrs={'border':'0','cellpadding':'0','cellspacing':'0','class':'top'})
                 #
@@ -132,11 +130,11 @@ class Product_List():
                 deli_detail2 = deli_detail[1].string
 
                 # # 가격
-                prod_price = prod_price[0].string
+                prod_price = prod_price[0].string.replace(",",'')
 
                 # 배송비
-                # deli_price = prod_deli[0].string.replace(",",'')
-                # print(deli_price)
+                deli_price = prod_deli[0].string.replace(",", '')
+
                 # 카테고리
                 category = category[0].string
                 # 제목
@@ -150,25 +148,21 @@ class Product_List():
                 change_date = changelist[2].string
 
                 prod_detail_list.append(
-                            [prod_num] + [prod_name] + [category] + [prod_price] + [country] + [prod_tax] + [
-                                deli_detail1] + [
-                                deli_detail2] +
-                            [changedlist] + [detail_text] + [change_date])
+                    [prod_num] + [prod_name] + [category] + [prod_price] + [country] + [prod_tax] + [deli_price] + [
+                        deli_detail1] + [deli_detail2] +
+                    [changedlist] + [detail_text] + [change_date])
 
-
-
-
-
-
+        print(file)
         return prod_detail_list
 
 
 
 
-a=Product_List()
+# a=Product_List()
 # a.mall_login()
 # a.file_write()
-a.prod_list()
+# a.prod_list()
+
 # if __name__ == '__main__':
 #     from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
 # #
