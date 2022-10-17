@@ -4,8 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 
 from Crawling.common.lib_request import RequestHit
-
+from Zentrade.libara.zen_product_list import DataZenProduct
+from Zentrade.index_zentrade.zen_lib_newprod import DataMallNewProduct
+from Crawling.common.lib_es import LibES
 import Crawling.common.util_fileloader as fl
+import Crawling.common.util_common as cu
+
 import os
 session = requests.Session()
 class Whole_list(RequestHit):
@@ -94,7 +98,7 @@ class Whole_list(RequestHit):
     # 페이지 상세 정보 가져오기
     def parser_wholelist(self):
         listproduct = []
-    
+        mall = DataZenProduct()
         for page in range(52):
             page =page+1
             file = open(f'd:/data/'+self.gubun+'/'+self.path+'/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
@@ -114,51 +118,54 @@ class Whole_list(RequestHit):
 
                 # 상품가격
                 prod_price = ttt[0].string
+                mall.timestamp = cu.getDateToday()
+                mall.code_mall = self.code_mall
+                mall.name_mall = self.name_mall
+                mall.name_code_mall = self.name_code_mall
+                mall.category = ''
+                mall.prod_num = prod_num
+                mall.prod_name = prod_name
+                mall.prod_price = prod_price
+                mall.prod_date = ''
+                mall.prod_out = ''
+                mall.reason = ''
+                mall.prod_date = ''
+                mall.reorder = ''
+                mall.reorder_date = ''
+                mall.expire_date = ''
 
-                listproduct.append([prod_num]+[prod_name]+[prod_price])
+                mall.set_date_dict()
+                tmp_dict = mall.get_date_dict()
+                newlist = [i for i in tmp_dict.values()]
 
-        # print(listproduct)
+                listproduct.append(tmp_dict)
         return listproduct
 
-    def parsor_one_file(self, filename):
-        from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
-        self.mall_es = DataMallProdList()
-
-        fpath = fl.getFilePath(self.gubun, self.path)
-        print(fpath)
-        print(filename)
-        mall_es = DataMallProdList()
-        # read : file name
-        readdat = fl.readFileName(fpath, filename)
-        soup = BeautifulSoup(readdat, 'lxml')
-
-        # parsor - 파일의 모든 상품 data class
-        file_prod_list = self.parser_wholelist(filename, soup)
-        self.mall_es.insertProdlistES(file_prod_list)
-
-
-
+# a=Whole_list()
+# a.parser_wholelist()
 if __name__ == '__main__':
     from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
-#
-#     #######################
-#     # test = 'create_file
-#     # test = ' login'
-    test = 'insert'
-#     # test = 'search_name'
-#     # test = 'parsor_one_file'
-#     #######################
-#     name = "시스맥스"
-    whole = Whole_list()
+
     #######################
+    # test = 'create_file
+    # test = ' login'
+    test = 'insert'
+    # test = 'search_name'
+    # test = 'parsor_one_file'
+    #######################
+    name = "시스맥스"
+    whole = Whole_list()
+
     # if test == 'create_file':
     #     whole.file_write()
     # # login
     # if test == 'login':
     #     whole.mall_login()
-    # # insert
+    # insert
     if test == 'insert' :
-       DataMallProdList().insertbulk_whole()
+       mall = DataZenProduct()
+       b=Whole_list().parser_wholelist()
+       DataMallProdList().insertbulk_whole(Whole_list().parser_wholelist())
 
     # if test == 'search_name':
     #     malles = DataMallProdlistES()
@@ -170,4 +177,4 @@ if __name__ == '__main__':
     #     print('len : ', len(all_data))
     # #######################
     # # sess close
-#     whole.close_session()
+# #     whole.close_session()

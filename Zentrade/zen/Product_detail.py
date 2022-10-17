@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup as BS
 import requests
 import os
-
-
+from Zentrade.libara.zen_prodlist_detail import DataZenProductList
+from bs4 import BeautifulSoup as BS
+from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
+import Crawling.common.util_common as cu
 
 
 session = requests.Session()
@@ -84,6 +86,7 @@ class Product_List():
 
     def prod_list(self):
         prod_detail_list = []
+        mall = DataZenProductList()
         path ='d:/data/prod_list/'
         file_list = os.listdir(path)
         filename = [file for file in file_list if file.endswith('.html') ]
@@ -146,53 +149,43 @@ class Product_List():
                 changedlist = changelist[0].string
                 detail_text = changelist[1].string
                 change_date = changelist[2].string
+                mall.timestamp =cu.getDateToday()
+                mall.code_mall = self.code_mall
+                mall.name_mall = self.name_mall
+                mall.name_code_mall =self.name_code_mall
+                mall.category = category
+                mall.prod_num = prod_num
+                mall.prod_name = prod_name
+                mall.prod_price =prod_price
+                mall.prod_date = ''
+                mall.country = country
+                mall.prod_tax = prod_tax
+                mall.deli_price = deli_price
+                mall.deli_detail1 = deli_detail1
+                mall.deli_detail2 = deli_detail2
+                mall.changedlist = changedlist
+                mall.detail_tax = detail_text
+                mall.change_dete = change_date
 
-                prod_detail_list.append(
-                    [prod_num] + [prod_name] + [category] + [prod_price] + [country] + [prod_tax] + [deli_price] + [
-                        deli_detail1] + [deli_detail2] +
-                    [changedlist] + [detail_text] + [change_date])
+                mall.set_date_dict()
+                tmp_dict = mall.get_date_dict()
+                newlist = [i for i in tmp_dict.values()]
 
-        print(file)
+                prod_detail_list.append(tmp_dict)
+
         return prod_detail_list
 
 
 
-
+#
 # a=Product_List()
-# a.mall_login()
-# a.file_write()
+# # a.mall_login()
+# # a.file_write()
 # a.prod_list()
 
-# if __name__ == '__main__':
-#     from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
-# #
-# #     #######################
-# #     # test = 'create_file
-# #     # test = ' login'
-#     test = 'insert'
-# #     # test = 'search_name'
-# #     # test = 'parsor_one_file'
-# #     #######################
-# #     name = "시스맥스"
-#
-#     #######################
-#     # if test == 'create_file':
-#     #     whole.file_write()
-#     # # login
-#     # if test == 'login':
-#     #     whole.mall_login()
-#     # # insert
-#     if test == 'insert' :
-#        DataMallProdList().insertbulk_prod_detail()
+if __name__ == '__main__':
 
-    # if test == 'search_name':
-    #     malles = DataMallProdlistES()
-    #     mall_code_res = malles.search_mall_code()
-    #     print('mall_code : ', mall_code_res)
-    #     all_data = malles.result_all_data(mall_code_res)
-    #     for it in all_data:
-    #         print(it.get_data_dict())
-    #     print('len : ', len(all_data))
-    # #######################
-    # # sess close
-#     whole.close_session()
+    test = 'productdetail'
+    mall = DataZenProductList()
+    DataMallProddetail().insertbulk_prod_detail(Product_List().prod_list())
+

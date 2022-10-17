@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup as BS
 import requests
 import os
 from Product_list import Whole_list
+from Zentrade.libara.zen_prodlist_detail import DataZenProductList
+
 import Crawling.common.util_common as cu
 import New_product as Np
 session = requests.Session()
@@ -78,6 +80,7 @@ class Product_List(Whole_list):
 
     def new_prod_list(self):
         new_prod_detail_list = []
+        mall = DataZenProductList()
         html_file = open(f'd:/data/new_prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+a.file_write()+'.html', 'r', encoding='cp949')
         html = BS(html_file, "html.parser")
         itemlist = html.select("div[class=indiv]")
@@ -101,9 +104,9 @@ class Product_List(Whole_list):
             changelist = detail.select('table[align=center] tr:nth-of-type(2) td')
 
             # 색상정보
-            option = detail.select('select[name^=opt]')
-            for o in option:
-                option_detail = o.get_text(strip=True).replace("== 옵션선택 ==", "")
+            # option = detail.select('select[name^=opt]')
+            # for o in option:
+            #     option_detail = o.get_text(strip=True).replace("== 옵션선택 ==", "")
             # 원산지
             country = country_tax[0].string
             # 과세여부
@@ -123,16 +126,49 @@ class Product_List(Whole_list):
             # 상품번호
             prod_num = prod_num[1].string
             # 변동내용(변경항목,상세내용,변경일시)
+
             changedlist = changelist[0].string
             detail_text = changelist[1].string
-            change_data = changelist[2].string
-            new_prod_detail_list.append([prod_num] + [prod_name] + [category] + [prod_price]+[country]+[prod_tax]+[deli_price]+[deli_detail1]+[deli_detail2]
-                                    +[option_detail]+[changedlist]+[detail_text]+[change_data])
+            change_date = changelist[2].string
 
-        print(new_prod_detail_list)
-        return new_prod_detail_list
+
+            mall.timestamp = cu.getDateToday()
+            mall.code_mall = self.code_mall
+            mall.name_mall = self.name_mall
+            mall.name_code_mall = self.name_code_mall
+            mall.category = category
+            mall.prod_num = prod_num
+            mall.prod_name = prod_name
+            mall.prod_price = prod_price
+            mall.prod_date = ''
+            mall.country = country
+            mall.prod_tax = prod_tax
+            mall.deli_price = deli_price
+            mall.deli_detail1 = deli_detail1
+            mall.deli_detail2 = deli_detail2
+            mall.changedlist = changedlist
+            mall.detail_tax = detail_text
+            mall.change_dete = change_date
+
+            mall.set_date_dict()
+            tmp_dict = mall.get_date_dict()
+            newlist = [i for i in tmp_dict.values()]
+            print(tmp_dict)
+            for i in self.num:
+                whole = i[:][0]
+                if whole == prod_num:
+                    print(whole, prod_num)
+                    print('존재하는 파일')
+                else:
+                    return tmp_dict
+
 #
 a= Product_List()
-# a.__init__()
-a.file_write()
-# a.new_prod_list()
+# # a.__init__()
+# a.file_write()
+# # a.new_prod_list()
+if __name__ =='__main__':
+    test = 'newproductdetail'
+    if test == 'newproductdetail':
+        mall = DataZenProductList()
+        Product_List().new_prod_list()

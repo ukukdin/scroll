@@ -159,7 +159,7 @@ class Chaesiknara(RequestHit):
             # print(num , ' : ########################' )
 
             file_prod_list.append(self.parsor_one_prod(filename, it))
-        # print(file_prod_list)
+        print(file_prod_list)
         return file_prod_list
 
     def parsor_one_prod(self, filename, dat):

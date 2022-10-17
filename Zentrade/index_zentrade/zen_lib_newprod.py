@@ -2,12 +2,13 @@
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
-from Zentrade.libara.zen_prodlist_data import DataZenProductList
+from Zentrade.libara.zen_prodlist_detail import DataZenProductList
 
 class DataMallNewProduct():
     def __init__(self):
         super(DataMallNewProduct, self).__init__()
-        self.esip = '192.168.0.41:9200'
+        self.esip = '127.0.0.1:9200'
+
         self.es = Elasticsearch(self.esip)
         self.index = 'newproductlist'
     # 신상품 bulk 로 실행

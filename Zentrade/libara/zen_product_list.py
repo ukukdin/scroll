@@ -16,7 +16,7 @@ class DataZenProduct:
         self.name_code_mall = None
 
         # 상품 카테고리
-        self.mall_category = None
+        self.category = None
         # 상품 번호
         self.prod_num = None
         # 상품명
@@ -24,14 +24,14 @@ class DataZenProduct:
 
         # 상품가격
         self.prod_price = None
-
+        # 신상품 입고 날짜
+        self.prod_date = None
         # 재고여부
         self.prod_out = None
 
         # 품절이유
         self.reason = None
-        # 입고 날짜
-        self.prod_date = None
+
         # 재입고 여부
         self.reorder = None
 
@@ -41,7 +41,7 @@ class DataZenProduct:
         # 삭제예정일
         self.expire_date = None
 
-    def get_date_dict1(self):
+    def get_date_dict(self):
         return self.data_dict
 
     def set_date_dict(self):
@@ -55,11 +55,13 @@ class DataZenProduct:
             # 몰 name code
             'name_code_mall': self.name_code_mall,
             # 카테고리
-            'mall_category':self.mall_category,
+            'category':self.category,
             # 상품명
             'prod_num':self.prod_num,
             #상품이름
             'prod_name':self.prod_name,
+            # 신상품 입고날짜
+            'prod_date': self.prod_date,
             #상품가격
             'prod_price':self.prod_price,
             #재고여부

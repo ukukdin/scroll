@@ -3,31 +3,14 @@ from elasticsearch_dsl import Document
 from elasticsearch import helpers
 import Crawling.common.util_common as cu
 from Zentrade.zen import Out_product,Product_list
-from Zentrade.libara.zen_data import DataZenProduct
-from Zentrade.libara.zen_prodlist_data import DataZenProductList
+from Zentrade.libara.zen_product_list import DataZenProduct
+from Zentrade.libara.zen_prodlist_detail import DataZenProductList
 
 class DataMallProdList(Document):
     def __init__(self):
         super(DataMallProdList, self).__init__()
-        # 전체페이지
-        #
-        self.w = Product_list.Whole_list()
-
-        # 전체페이지에서 값
-        self.no = self.w.parser_wholelist()
-        # print(self.no)
-
-        # # # 품절 페이지
-        # # self.o = Out_product.out_of_stock()
-        # # # 품절 페이지값
-        # # self.op =self.o.outstock()
-        # # 상세상품 페이지
-        # self.p = Product_detail.Product_List()
-        # self.pl = self.p.prod_list()
-        # # 상세상품 페이지값
-
-        self.es = Elasticsearch('[192.168.0.41]:9200')
-
+        self.es = Elasticsearch('[127.0.0.1]:9200')
+        self.index = 'productlist'
 
     # 하나만 실행
     # def insertone(self):
@@ -40,27 +23,15 @@ class DataMallProdList(Document):
     #     }
     #     self.es.index(index=index,doc_type="_doc",body=doc)
     # 벌크 넣고 실행
-    def insertbulk_whole(self):
+    def insertbulk_whole(self,onedoc):
         docs = []
-        index = 'productlist'
-        for a in self.no:
-            name = a[:][1].string
-            print(self.Wname)
-            num = a[:][0]
-            price=a[:][2].replace(",","")
-            docs.append({
-               '_index':'productlist',
-                '_source':{
-                   'name_mall': self.w.name_mall,
-                   'name_code_mall': self.w.name_code_mall,
-                   'code_mall':self.w.code_mall,
-                   'prod_num':num,
-                   'prod_name':name,
-                   'prod_price':price,
-                   '@timestamp':cu.getDateToday()
-                    }
-            })
-        helpers.bulk(self.es,docs,index=index)
+
+        for i in onedoc:
+            print(i)
+            doc = {'_index':self.index,'_source':i}
+            docs.append(doc)
+
+        helpers.bulk(self.es,docs,index=self.index)
 
     # def insertProductlistW(self,dataone):
     #     newDocs=[]
@@ -182,6 +153,5 @@ class DataMallProdList(Document):
     #         prod_list.set_date_dict()
     #         return prod_list
 
-DataMallProdList().__init__()
-DataMallProdList().insertbulk_whole()
+
 # DataMallProdList().insertbulk_prod_detail()

@@ -3,7 +3,8 @@ import Crawling.common.util_common as cu
 from Crawling.common.lib_es import LibES
 
 
-esip ='192.168.0.41:9200'
+# esip ='192.168.0.41:9200'
+esip = '127.0.0.1:9200'
 connections.create_connection(hosts=[esip])
 
 class DataWholepageIndex(Document):
@@ -14,13 +15,15 @@ class DataWholepageIndex(Document):
     # 몰 코드명
     name_code_mall = Keyword()
     # 카테고리
-    mall_category = Keyword()
+    category = Keyword()
     # 상품명
     prod_num = Keyword()
     # 상품이름
     prod_name = Text()
     # 상품가격
     prod_price = Integer()
+    # 상품 입력 날짜
+    prod_date = Text()
     # 상품전체 URL
     # Whole_prod_url = Keyword()
     # 재고여부
@@ -33,16 +36,15 @@ class DataWholepageIndex(Document):
     reorder_date = Text()
     # 삭제예정일
     expire_date = Text()
-    # 상품 입력 날짜
-    new_prod_date = Date()
 
-    # class Index:
-    #     code = cu.getDateMonth()
-    #     name = 'productlist'
-    #     setting={
-    #         'number_of_shards':1,
-    #
-    #     }
+
+    class Index:
+        code = cu.getDateMonth()
+        name = 'productlist'
+        setting={
+            'number_of_shards':1,
+
+        }
 
     class Index:
         code = cu.getDateMonth()

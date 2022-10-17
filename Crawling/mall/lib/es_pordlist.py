@@ -19,7 +19,7 @@ class DataMallProdlistES(LibES):
             # print('onedoc : ', onedoc)
 
             doc = {'_index': self.indexname, '_source': onedoc}
-            # print(doc)
+            print(doc)
 
             newDoc.append(doc)
         helpers.bulk(self.es, newDoc, index=self.indexname)
