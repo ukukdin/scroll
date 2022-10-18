@@ -60,10 +60,11 @@ class DataZenProduct:
             'prod_num':self.prod_num,
             #상품이름
             'prod_name':self.prod_name,
+            # 상품가격
+            'prod_price': self.prod_price,
             # 신상품 입고날짜
             'prod_date': self.prod_date,
-            #상품가격
-            'prod_price':self.prod_price,
+
             #재고여부
             'prod_out': self.prod_out,
             #품절이유

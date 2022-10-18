@@ -10,8 +10,8 @@ class LibES:
     def __init__(self):
         # self.man = Info.searchmaxcount
         self.man = 10000
-        # self.esip = '192.168.0.41:9200'
-        self.esip = '127.0.0.1:9200'
+        self.esip = '192.168.0.41:9200'
+        # self.esip = '127.0.0.1:9200'
         self.es = Elasticsearch(self.esip)
 
 

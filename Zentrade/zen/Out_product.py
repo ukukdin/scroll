@@ -1,13 +1,19 @@
 import re
-import pandas as pd
+
+import elasticsearch
 from bs4 import BeautifulSoup as BS
 import requests
-import datetime
+from Zentrade.libara.zen_product_list import DataZenProduct
 import os
+import Crawling.common.util_common as cu
+from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
+from elasticsearch_dsl import Search
 session = requests.Session()
 class out_of_stock():
     def __init__(self):
         super(out_of_stock, self).__init__()
+        from Zentrade.zen.Product_list import Whole_list
+        self.no = Whole_list().parser_wholelist()
 
         self.loginPage = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
@@ -79,6 +85,7 @@ class out_of_stock():
 
     def outstock(self):
         stock = []
+        mall = DataZenProduct()
         html_file = open(f'd:/data/outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall+ '.html', 'r', encoding='cp949')
         html = BS(html_file, "html.parser")
         ranged = html.findAll("font", attrs={"color": "#000000"})
@@ -86,10 +93,9 @@ class out_of_stock():
         for i in ranged:
             num = i.findAll("b")
             range_num = num[0].string
-
             for page in range(int(range_num)):
                 for so in detail:
-                     # 상품번호
+                    # 상품번호
                     producted_num = so.select("td:nth-of-type(1) font[style^=font] b")
                     prod_num = producted_num[page].string
 
@@ -98,7 +104,7 @@ class out_of_stock():
                     prod_name = producted_detail[page].string
                     # # 가격
                     priced = so.select("b[class=blue]")
-                    prod_price = priced[page].string.replace(',','')
+                    prod_price = priced[page].string.replace(',', '')
 
                     # # 재고정보
                     out = so.select("span[style^=background] font")
@@ -110,8 +116,7 @@ class out_of_stock():
 
                     #  제품 품절이유
                     reasoned = so.select("td[align=left] font")
-                    reason = reasoned[page].text.replace("\n","")
-
+                    reason = reasoned[page].text.replace("\n", "")
 
                     # 재입고예정일
                     # 재입고 예정일 1번째단
@@ -120,6 +125,7 @@ class out_of_stock():
                     b.append(delete_dated1[1])
                     reorder_dated = so.select("td:nth-of-type(6)")
                     reorder_da = b + reorder_dated
+                    # 재입고예정일 최종
                     reorder_date = reorder_da[page].text
 
                     # 삭제예정일 첫번째단
@@ -128,12 +134,82 @@ class out_of_stock():
                     a = []
                     a.append(delete_dated2[1])
                     expire_dated = a + delete_dated
+                    # 삭제예정일 첫번째단 최종
                     expire_date = expire_dated[page].text
-                    stock.append([prod_num]+[prod_name]+[prod_out]+[prod_price]+[reorder]
-                                 +[reorder_date]+[expire_date]+[reason])
+
+                    mall.timestamp = cu.getDateToday()
+                    mall.code_mall = self.code_mall
+                    mall.name_mall = self.name_mall
+                    mall.name_code_mall = self.name_code_mall
+                    mall.category = ''
+                    mall.prod_num = prod_num
+                    mall.prod_name = prod_name
+                    mall.prod_price = prod_price
+                    mall.prod_date = ''
+                    mall.prod_out = prod_out
+                    mall.reason = reason
+                    mall.reorder = reorder
+                    mall.reorder_date = reorder_date
+                    mall.expire_date = expire_date
+                    mall.set_date_dict()
+                    tmp_dict = mall.get_date_dict()
+                    newlist = [i for i in tmp_dict.values()]
+                    stock.append(tmp_dict)
+
+                    # return stock
 
         return stock
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # a=out_of_stock()
-# a.file_write()
-# print(a.outstock())
+
+
+if __name__ =='__main__':
+    # test = 'insert'
+    # test = 'createfile'
+    # test = 'login'
+    test = 'update'
+    # test = 'searchall'
+    ot = out_of_stock()
+    prod_name = '품절상품입니다.'
+    indexname ='out_product'
+    index_name = 'product_list'
+    if test =='insert':
+        mall = DataMallProddetail()
+        DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
+
+    for i in ot.outstock():
+
+        no = list(i.values())[5]
+        if test == 'update':
+            mall = DataMallProddetail()
+            mall_prodnum = mall.search_mall_code(no,index_name)
+            # update 위한 id 구하는 구문
+            a= list(mall_prodnum.values())[3]
+            b=list(a.values())[2]
+            for a in b:
+                # 최종 update doc id
+                ids = list(a.values())[2]
+                all_data = mall.result_all_data_product(mall_prodnum)
+                for it in all_data:
+                    print(it.get_date_dict())
+                if no != None:
+                    mall.update_mall_code(prod_name, index_name,ids)
+                    print('업데이트중 판매 종료 알림')
+                else:
+                    print('중복이 없습니다. ')
+
+
+

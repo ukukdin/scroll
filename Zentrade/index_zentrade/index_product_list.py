@@ -3,8 +3,8 @@ import Crawling.common.util_common as cu
 from Crawling.common.lib_es import LibES
 
 
-# esip ='192.168.0.41:9200'
-esip = '127.0.0.1:9200'
+esip ='192.168.0.41:9200'
+# esip = '127.0.0.1:9200'
 connections.create_connection(hosts=[esip])
 
 class DataWholepageIndex(Document):
@@ -37,30 +37,29 @@ class DataWholepageIndex(Document):
     # 삭제예정일
     expire_date = Text()
 
-
+    #
+    # class Index:
+    #     code = cu.getDateMonth()
+    #     name = 'product_list'
+    #     setting={
+    #         'number_of_shards':1,
+    #
+    #     }
+    #
     class Index:
         code = cu.getDateMonth()
-        name = 'productlist'
-        setting={
-            'number_of_shards':1,
-
-        }
-
-    class Index:
-        code = cu.getDateMonth()
-        name = 'newproductlist'
-        setting = {
+        name = 'new_product_list'
+        setting ={
             'number_of_shards': 1,
 
         }
 
     # class Index:
     #     code = cu.getDateMonth()
-    #     name = 'product'
-    #     doc_type = 'outofproduct'
+    #     name = 'out_product'
+    #
     #     setting = {
     #         'number_of_shards': 1,
-    #
     #     }
 
     def save(self, **kwargs):
@@ -69,13 +68,13 @@ class DataWholepageIndex(Document):
 
 if __name__ == '__main__':
     # 상품 리스트
-    # re_index_name = 'productlist'
+    # re_index_name = 'product_list'
     # 신상품 리스트
-    re_index_name = 'newproductlist'
+    re_index_name = 'new_product_list'
     # # 품절 리스트
-    # re_index_name = 'out_of_product'
+    # re_index_name = 'out_product'
     # 상품 리스트1
-    if re_index_name =='productlist':
+    if re_index_name =='product_list':
         # delete index
         libes = LibES()
         libes.deleteIndex(re_index_name)
@@ -87,7 +86,7 @@ if __name__ == '__main__':
         print(re_index_name + " : create index! done")
 
     # 신상품 리스트
-    if re_index_name =='newproductlist' :
+    if re_index_name =='new_product_list' :
         # delete index
         libes = LibES()
         libes.deleteIndex(re_index_name)
@@ -99,7 +98,7 @@ if __name__ == '__main__':
         print(re_index_name + " : create index! done")
 
     # 품절 리스트
-    if re_index_name == 'out_of_product' :
+    if re_index_name == 'out_product' :
         # delete index
         libes = LibES()
         libes.deleteIndex(re_index_name)

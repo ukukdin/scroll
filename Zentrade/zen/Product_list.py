@@ -1,17 +1,13 @@
-import time
 from bs4 import BeautifulSoup as BS
 import requests
-from bs4 import BeautifulSoup
-
 from Crawling.common.lib_request import RequestHit
 from Zentrade.libara.zen_product_list import DataZenProduct
-from Zentrade.index_zentrade.zen_lib_newprod import DataMallNewProduct
-from Crawling.common.lib_es import LibES
-import Crawling.common.util_fileloader as fl
+from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import Crawling.common.util_common as cu
-
 import os
+
 session = requests.Session()
+
 class Whole_list(RequestHit):
     def __init__(self):
         super(Whole_list, self).__init__()
@@ -110,7 +106,7 @@ class Whole_list(RequestHit):
             for productList in tag_table:
                 tt = productList.select('div')
                 # 숫자
-                prod_num = tt[2].string.replace("No. ", "")
+                self.prod_num = tt[2].string.replace("No. ", "")
 
                 # 상품명
                 prod_name = tt[3].string
@@ -123,13 +119,13 @@ class Whole_list(RequestHit):
                 mall.name_mall = self.name_mall
                 mall.name_code_mall = self.name_code_mall
                 mall.category = ''
-                mall.prod_num = prod_num
+                mall.prod_num = self.prod_num
                 mall.prod_name = prod_name
                 mall.prod_price = prod_price
                 mall.prod_date = ''
                 mall.prod_out = ''
                 mall.reason = ''
-                mall.prod_date = ''
+
                 mall.reorder = ''
                 mall.reorder_date = ''
                 mall.expire_date = ''
@@ -144,37 +140,41 @@ class Whole_list(RequestHit):
 # a=Whole_list()
 # a.parser_wholelist()
 if __name__ == '__main__':
-    from Zentrade.index_zentrade.zen_lib_es import DataMallProdList
 
     #######################
     # test = 'create_file
     # test = ' login'
     test = 'insert'
     # test = 'search_name'
+    # test = 'search'
     # test = 'parsor_one_file'
     #######################
     name = "시스맥스"
     whole = Whole_list()
 
     # if test == 'create_file':
-    #     whole.file_write()
+    # whole.file_write()
     # # login
     # if test == 'login':
-    #     whole.mall_login()
+    # whole.mall_login()
+    mall = whole.code_mall
+    indexname = 'product_list'
     # insert
     if test == 'insert' :
-       mall = DataZenProduct()
+       mall = DataMallProddetail()
        b=Whole_list().parser_wholelist()
-       DataMallProdList().insertbulk_whole(Whole_list().parser_wholelist())
+       DataMallProddetail().insertbulk_prod(Whole_list().parser_wholelist(),indexname)
 
-    # if test == 'search_name':
-    #     malles = DataMallProdlistES()
-    #     mall_code_res = malles.search_mall_code()
-    #     print('mall_code : ', mall_code_res)
-    #     all_data = malles.result_all_data(mall_code_res)
-    #     for it in all_data:
-    #         print(it.get_data_dict())
-    #     print('len : ', len(all_data))
+    if test == 'search_name':
+        malles = DataMallProddetail()
+        mall_code_res = malles.search_mall_code(mall,indexname)
+        print('mall_code : ', mall_code_res)
+        all_data = malles.result_all_data_product(mall_code_res)
+        for it in all_data:
+            print(it.get_date_dict())
+        print('len : ', len(all_data))
+
+
     # #######################
     # # sess close
 # #     whole.close_session()

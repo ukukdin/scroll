@@ -141,7 +141,7 @@ class Product_List():
                 # 카테고리
                 category = category[0].string
                 # 제목
-                prod_name = prod_name[0].string
+                self.prod_name = prod_name[0].string
                 # 상품번호
                 prod_num = prod_num[1].string.replace("상품번호 : ", "")
                 # print(prod_num)
@@ -149,13 +149,15 @@ class Product_List():
                 changedlist = changelist[0].string
                 detail_text = changelist[1].string
                 change_date = changelist[2].string
+
+
                 mall.timestamp =cu.getDateToday()
                 mall.code_mall = self.code_mall
                 mall.name_mall = self.name_mall
                 mall.name_code_mall =self.name_code_mall
                 mall.category = category
                 mall.prod_num = prod_num
-                mall.prod_name = prod_name
+                mall.prod_name = self.prod_name
                 mall.prod_price =prod_price
                 mall.prod_date = ''
                 mall.country = country
@@ -184,8 +186,47 @@ class Product_List():
 # a.prod_list()
 
 if __name__ == '__main__':
+    # insert
+    # test = 'insert'
+    # 검색
+    test = 'search'
+    # test = 'search_all'
+   #  create file
+   #  test = 'createfile'
+   # login
+   #  test = 'login'
+    detail= Product_List()
+    # -------------------------#
+    # 코드명
+    code_mall = detail.code_mall
+    # 상품명
+    name = '휴지'
+    indexname = 'product_detail'
 
-    test = 'productdetail'
-    mall = DataZenProductList()
-    DataMallProddetail().insertbulk_prod_detail(Product_List().prod_list())
 
+    # insert
+    if test == 'insert':
+
+        mall = DataZenProductList()
+        DataMallProddetail().insertbulk_prod_detail(Product_List().prod_list(),indexname)
+
+    # code_mall 하나로 검색하는방법
+    if test == 'search':
+        malles = DataMallProddetail()
+
+        mall_code_res = malles.search_mall_code(code_mall,indexname)
+        print('mall_code : ', mall_code_res)
+        all_data = malles.result_all_productdetail(mall_code_res)
+        for it in all_data:
+            print(it.get_date_dict())
+        print('len : ', len(all_data))
+
+    # 전체 검색
+    if test == 'search_all':
+        malles = DataMallProddetail()
+        malles_search_all = malles.getAllProddetail(indexname)
+        print('mall_code : ', malles_search_all)
+        all_data = malles.result_all_productdetail(malles_search_all)
+        for it in all_data:
+            print(it.get_date_dict())
+        print('len : ', len(all_data))
