@@ -173,43 +173,43 @@ class out_of_stock():
 
 
 
-# a=out_of_stock()
+a=out_of_stock()
+a.outstock()
 
-
-if __name__ =='__main__':
-    # test = 'insert'
-    # test = 'createfile'
-    # test = 'login'
-    test = 'update'
-    # test = 'searchall'
-    ot = out_of_stock()
-    prod_name = '품절상품입니다.'
-    indexname ='out_product'
-    index_name = 'product_list'
-    if test =='insert':
-        mall = DataMallProddetail()
-        DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
-
-    for i in ot.outstock():
-
-        no = list(i.values())[5]
-        if test == 'update':
-            mall = DataMallProddetail()
-            mall_prodnum = mall.search_mall_code(no,index_name)
-            # update 위한 id 구하는 구문
-            a= list(mall_prodnum.values())[3]
-            b=list(a.values())[2]
-            for a in b:
-                # 최종 update doc id
-                ids = list(a.values())[2]
-                all_data = mall.result_all_data_product(mall_prodnum)
-                for it in all_data:
-                    print(it.get_date_dict())
-                if no != None:
-                    mall.update_mall_code(prod_name, index_name,ids)
-                    print('업데이트중 판매 종료 알림')
-                else:
-                    print('중복이 없습니다. ')
-
+# if __name__ =='__main__':
+#     # test = 'insert'
+#     # test = 'createfile'
+#     # test = 'login'
+#     test = 'update'
+#     # test = 'searchall'
+#     ot = out_of_stock()
+#     prod_name = '품절상품입니다.'
+#     indexname ='out_product'
+#     index_name = 'product_list'
+#     if test =='insert':
+#         mall = DataMallProddetail()
+#         DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
+#
+#     for i in ot.outstock():
+#
+#         no = list(i.values())[5]
+#         if test == 'update':
+#             mall = DataMallProddetail()
+#             mall_prodnum = mall.search_mall_code(no,index_name)
+#             # update 위한 id 구하는 구문
+#             a= list(mall_prodnum.values())[3]
+#             b=list(a.values())[2]
+#             for a in b:
+#                 # 최종 update doc id
+#                 ids = list(a.values())[2]
+#                 all_data = mall.result_all_data_product(mall_prodnum)
+#                 for it in all_data:
+#                     print(it.get_date_dict())
+#                 if no != None:
+#                     mall.update_mall_code(prod_name, index_name,ids)
+#                     print('업데이트중 판매 종료 알림')
+#                 else:
+#                     print('중복이 없습니다. ')
+#
 
 

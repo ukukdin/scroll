@@ -40,15 +40,9 @@ class DataProductListIndex(Document):
     detail_tax = Text()
     # 상품 등록 변경 일시
     change_dete =Text()
+    # 상품전체 URL
+    Whole_prod_url = Keyword()
 
-    # 상세 상품 인덱스
-    # class Index:
-    #     code = cu.getDateMonth()
-    #     name = 'product_detail'
-    #
-    #     setting={
-    #         'number_of_shards':1,
-    #     }
     # 신상품 상세  인덱스
     class Index:
         code = cu.getDateMonth()
@@ -63,22 +57,8 @@ class DataProductListIndex(Document):
 
 
 if __name__ == '__main__':
-    # re_index_name = 'product_detail'
     re_index_name = 'new_prod_detail'
 
-
-
-    if re_index_name == 'product_detail':
-        # delete index
-        libes = LibES()
-        libes.deleteIndex(re_index_name)
-        print(re_index_name + ': delete index!')
-
-        # 상품 상세 리스트 인덱스 생성
-        # create prodlist index
-        DataProductListIndex()
-        DataProductListIndex.init()
-        print(re_index_name + " : create index! done")
 
     if re_index_name == 'new_prod_detail':
         # delete index
