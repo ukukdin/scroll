@@ -2,7 +2,6 @@
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
-from Zentrade.libara.zen_prodlist_detail import DataZenProductList
 
 class DataMallNewProduct():
     def __init__(self):

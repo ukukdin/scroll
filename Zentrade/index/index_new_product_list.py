@@ -14,8 +14,8 @@ class DataWholepageIndex(Document):
     name_mall = Keyword()
     # 몰 코드명
     name_code_mall = Keyword()
-    # 카테고리
-    category = Keyword()
+    # 상품리스트 url
+    prodlist_url = Keyword()
     # 상품명
     prod_num = Keyword()
     # 상품이름
@@ -24,9 +24,6 @@ class DataWholepageIndex(Document):
     prod_price = Integer()
     # 상품 입력 날짜
     prod_date = Text()
-    # 상품전체 URL
-    Whole_prod_url = Keyword()
-
 
     class Index:
         code = cu.getDateMonth()

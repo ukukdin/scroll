@@ -1,19 +1,18 @@
-import re
-import pandas as pd
 import requests
 import os
 from bs4 import BeautifulSoup as BS
 
 import Crawling.common.util_common as cu
-from Zentrade.libara.zen_product_list import DataZenProduct
+from Zentrade.zen_new_product.data_new_product_list import DataProductNewList
 
 from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
+
 session = requests.Session()
 
 class New_List():
     def __init__(self):
         super(New_List, self).__init__()
-        from Zentrade.zen.Product_list import Whole_list
+        from Zentrade.zen_product.Product_list import Whole_list
         self.num = Whole_list().parser_wholelist()
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
@@ -32,7 +31,7 @@ class New_List():
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
         }
 
-        self.new_prod = "https://www.zentrade.co.kr/shop/goods/goods_new.php?searchDate="
+        self.new_prodlist_url = "https://www.zentrade.co.kr/shop/goods/goods_new.php?searchDate="
 
         self.info = {
             "m_id": "hitrend",
@@ -44,8 +43,9 @@ class New_List():
 
 
 
-
-        self.login_res = session.post(self.login_url, self.info, self.login_header)
+    def mall_login(self):
+        login_res = session.post(self.login_url, self.info, self.login_header)
+        print(login_res.text)
 
     def make_directory(self):
         os.chdir("D:/data/")
@@ -56,11 +56,11 @@ class New_List():
 
     def file_write(self):
 
-        a = self.new_prod+'2022-09-23'
+        a = self.new_prodlist_url+cu.getDateToday()
         login_res = session.get(a).text
         self.make_directory()
         html_file = open(
-            f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +'2022-09-23'+'.html', 'w', encoding='cp949')
+            f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +cu.getDateToday()+'.html', 'w', encoding='cp949')
         html_file.write(login_res)
         html_file.close()
 
@@ -69,11 +69,11 @@ class New_List():
         new_product_list = []
 
         file = open(
-            f'd:/data/NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+'2022-09-23'+'.html', 'r', encoding='cp949')
+            f'd:/data/NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+cu.getDateToday()+'.html', 'r', encoding='cp949')
         self.html = BS(file.read(), "html.parser")
         self.new_list = self.html.findAll("td", attrs={"bgcolor": "FFD9EC", "height": "40", "id": "b_white",
                                                "style": "padding-left:15px;"})
-        mall = DataZenProduct()
+        mall = DataProductNewList()
 
         for a in self.new_list:
             num = a.findAll("b")
@@ -108,16 +108,12 @@ class New_List():
                     mall.code_mall = self.code_mall
                     mall.name_mall = self.name_mall
                     mall.name_code_mall = self.name_code_mall
-                    mall.category = ''
+                    mall.new_prodlist_url = self.new_prodlist_url+cu.getDateToday()
                     mall.prod_num = prod_num
                     mall.prod_name = prod_name
                     mall.prod_price= prod_price
                     mall.prod_date = prod_date
-                    mall.prod_out = ''
-                    mall.reason = ''
-                    mall.reorder = ''
-                    mall.reorder_date = ''
-                    mall.expire_date = ''
+
 
 
                     mall.set_date_dict()
@@ -142,11 +138,17 @@ if __name__ =='__main__':
     index_name = 'product_list'
 
     prod_out = '신상품'
-
-    test= 'search'
+    # test = 'createfile'
+    test = 'login'
+    # test= 'search'
     # test  = 'insert'
-    np = New_List()
 
+    np = New_List()
+    if test == 'login':
+        np.mall_login()
+
+    if test =='createfile':
+        np.file_write()
 
     if test == 'insert':
         mall = DataMallProddetail()

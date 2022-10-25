@@ -14,6 +14,8 @@ class DataProductListIndex(Document):
     name_mall = Keyword()
     # 몰 코드명
     name_code_mall = Keyword()
+    # 상품디테일 url
+    prodDetail_url = Keyword()
     # 카테고리
     category = Keyword()
     # 상품명
@@ -40,8 +42,7 @@ class DataProductListIndex(Document):
     detail_tax = Text()
     # 상품 등록 변경 일시
     change_dete =Text()
-    # 상품전체 URL
-    Whole_prod_url = Keyword()
+
 
     # 신상품 상세  인덱스
     class Index:

@@ -1,10 +1,12 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Document
 from elasticsearch import helpers
-from elasticsearch_dsl import Search
-import Crawling.common.util_common as cu
-from Zentrade.libara.zen_prodlist_detail import DataZenProductList
-from Zentrade.libara.zen_product_list import DataZenProduct
+from Zentrade.zen_new_product.data_new_Product_detail import DataZenProductList
+from Zentrade.zen_new_product.data_new_product_list import DataProductNewList
+from Zentrade.zen_product.data_prodlist_detail import DataProdlist_detail
+from Zentrade.zen_product_out.data_product_out import DataProductOut
+from Zentrade.zen_product.data_product_list import DataProductList
+
 
 class DataMallProddetail(Document):
     def __init__(self):
@@ -72,7 +74,7 @@ class DataMallProddetail(Document):
         except Exception as ex:
             print('es_oasis_prod - getAllProdlist :', ex)
 
-    # all 상품 상세 리스트
+    # 상품 상세 리스트
     def result_all_productdetail(self, res):
         all_data_model = []
         for item in res['hits']['hits']:
@@ -131,15 +133,16 @@ class DataMallProddetail(Document):
         all_data_model = []
         for item in res['hits']['hits']:
             # class
-            prod_list = DataZenProduct()
+            prod_list = DataProductList()
             prod_list.timestamp = item['_source']['@timestamp']
             prod_list.code_mall = item['_source']['code_mall']
             prod_list.name_mall = item['_source']['name_mall']
             prod_list.name_code_mall = item['_source']['name_code_mall']
+            prod_list.prodlist_url= item['_source']['prodlist_url']
             prod_list.prod_num = item['_source']['prod_num']
             prod_list.prod_name = item['_source']['prod_name']
             prod_list.prod_price = item['_source']['prod_price']
-            # prod_list.expire_date = item['_source']['expire_date']
+
             # data class set dict
             prod_list.set_date_dict()
             all_data_model.append(prod_list)
@@ -147,12 +150,13 @@ class DataMallProddetail(Document):
     # 전체 상품 리스트 값 하나 넣기
     def result_one_data_product(self, item):
         # class
-        
-        prod_list = DataZenProduct()
+
+        prod_list = DataProductList()
         prod_list.timestamp = item['_source']['@timestamp']
         prod_list.code_mall = item['_source']['code_mall']
         prod_list.name_mall = item['_source']['name_mall']
         prod_list.name_code_mall = item['_source']['name_code_mall']
+        prod_list.prodlist_url = item['_source']['prodlist_url']
         prod_list.prod_num = item['_source']['prod_num']
         prod_list.prod_name = item['_source']['prod_name']
         prod_list.prod_price = item['_source']['prod_price']
@@ -186,7 +190,7 @@ class DataMallProddetail(Document):
     # 품절 리스트 개별
     def result_one_data_outproduct(self, item):
         # class
-        prod_list = DataZenProduct()
+        prod_list = DataProductOut()
         prod_list.timestamp = item['_source']['@timestamp']
         prod_list.code_mall = item['_source']['code_mall']
         prod_list.name_mall = item['_source']['name_mall']

@@ -1,10 +1,8 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Document
 from elasticsearch import helpers
-import Crawling.common.util_common as cu
-from Zentrade.zen import Out_product,Product_list
-from Zentrade.libara.zen_product_list import DataZenProduct
-from Zentrade.libara.zen_prodlist_detail import DataZenProductList
+from Zentrade.zen_new_product.data_new_product_list import DataZenProduct
+
 
 class DataMallProdList(Document):
     def __init__(self):

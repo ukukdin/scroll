@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as BS
 import requests
 from Crawling.common.lib_request import RequestHit
-from Zentrade.libara.zen_product_list import DataZenProduct
+from Zentrade.zen_product.data_product_list import DataProductList
 from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import Crawling.common.util_common as cu
 import os
@@ -57,15 +57,6 @@ class Whole_list(RequestHit):
             "m_id": "hitrend",
             "password": "!qaz2wsx3edc"
         }
-        self.mall_category = {
-            '001':'문구/사무용품',
-            '004':'생활용품',
-            '005':'주방/욕실용품',
-            '007':'디지털/자동차',
-            '009':'여행/캠핑/취미',
-            '011':'패션/이미용/건강',
-            '012':'유아동/출산',
-        }
     # login
     def mall_login(self):
         login_res = session.post(self.login_url,self.info)
@@ -81,8 +72,7 @@ class Whole_list(RequestHit):
             
     # 파일 만들어서 저장
     def file_write(self):
-        for page in range(52):
-            page = page+1
+        for page in range(1,52,1):
             url = self.Whole_prod_url+str(page)
             login_res = session.get(url).text
             self.make_directory()
@@ -94,9 +84,9 @@ class Whole_list(RequestHit):
     # 페이지 상세 정보 가져오기
     def parser_wholelist(self):
         listproduct = []
-        mall = DataZenProduct()
-        for page in range(52):
-            page =page+1
+        mall = DataProductList()
+        for page in range(1,52,1):
+
             file = open(f'd:/data/'+self.gubun+'/'+self.path+'/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
             html = BS(file.read(),'html.parser')
 
@@ -113,26 +103,20 @@ class Whole_list(RequestHit):
                 ttt = productList.select('b')
 
                 # 상품가격
-                prod_price = ttt[0].string
+                prod_price = ttt[0].string.replace(",","")
                 mall.timestamp = cu.getDateToday()
                 mall.code_mall = self.code_mall
                 mall.name_mall = self.name_mall
                 mall.name_code_mall = self.name_code_mall
-                mall.category = ''
+                mall.prodlist_url =self.Whole_prod_url + str(page)
                 mall.prod_num = self.prod_num
                 mall.prod_name = prod_name
                 mall.prod_price = prod_price
-                mall.prod_date = ''
-                mall.prod_out = ''
-                mall.reason = ''
 
-                mall.reorder = ''
-                mall.reorder_date = ''
-                mall.expire_date = ''
 
                 mall.set_date_dict()
                 tmp_dict = mall.get_date_dict()
-                newlist = [i for i in tmp_dict.values()]
+
 
                 listproduct.append(tmp_dict)
         return listproduct

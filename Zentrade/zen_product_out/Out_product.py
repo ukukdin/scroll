@@ -1,18 +1,15 @@
-import re
-
-import elasticsearch
 from bs4 import BeautifulSoup as BS
 import requests
-from Zentrade.libara.zen_product_list import DataZenProduct
+from Zentrade.zen_product_out.data_product_out import DataProductOut
+from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import os
 import Crawling.common.util_common as cu
-from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
-from elasticsearch_dsl import Search
+
 session = requests.Session()
 class out_of_stock():
     def __init__(self):
         super(out_of_stock, self).__init__()
-        from Zentrade.zen.Product_list import Whole_list
+        from Zentrade.zen_product.Product_list import Whole_list
         self.no = Whole_list().parser_wholelist()
 
         self.loginPage = "https://www.zentrade.co.kr/shop/member/login_ok.php"
@@ -27,8 +24,8 @@ class out_of_stock():
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
         }
-        self.Sold_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=40&resale_yn=all'
-        self.Sold_out_url_header = {
+        self.prod_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=40&resale_yn=all'
+        self.prod_out_url_header = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Accept-Encoding": "gzip, deflate",
             "Accept-Language": "en-US,en;q=0.9,ko;q=0.8",
@@ -53,16 +50,8 @@ class out_of_stock():
 
 
 
-        self.login_res = session.get(self.Sold_out_url)
-        self.mall_category = {
-            '001': '문구/사무용품',
-            '004': '생활용품',
-            '005': '주방/욕실용품',
-            '007': '디지털/자동차',
-            '009': '여행/캠핑/취미',
-            '011': '패션/이미용/건강',
-            '012': '유아동/출산',
-        }
+        self.login_res = session.get(self.prod_out_url)
+
 
     def make_directory(self):
         os.chdir("D:/data/")
@@ -71,7 +60,7 @@ class out_of_stock():
         else:
             os.mkdir("outofstock")
     def file_write(self):
-        url = self.Sold_out_url
+        url = self.prod_out_url
         login_res = session.get(url).text
         self.make_directory()
         html_file = open(
@@ -85,7 +74,7 @@ class out_of_stock():
 
     def outstock(self):
         stock = []
-        mall = DataZenProduct()
+        mall = DataProductOut()
         html_file = open(f'd:/data/outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall+ '.html', 'r', encoding='cp949')
         html = BS(html_file, "html.parser")
         ranged = html.findAll("font", attrs={"color": "#000000"})
@@ -141,11 +130,11 @@ class out_of_stock():
                     mall.code_mall = self.code_mall
                     mall.name_mall = self.name_mall
                     mall.name_code_mall = self.name_code_mall
-                    mall.category = ''
+                    mall.prod_out_url = self.prod_out_url
                     mall.prod_num = prod_num
                     mall.prod_name = prod_name
                     mall.prod_price = prod_price
-                    mall.prod_date = ''
+
                     mall.prod_out = prod_out
                     mall.reason = reason
                     mall.reorder = reorder
@@ -153,7 +142,7 @@ class out_of_stock():
                     mall.expire_date = expire_date
                     mall.set_date_dict()
                     tmp_dict = mall.get_date_dict()
-                    newlist = [i for i in tmp_dict.values()]
+
                     stock.append(tmp_dict)
 
                     # return stock
@@ -171,24 +160,30 @@ class out_of_stock():
 
 
 
+#
+#
+# a=out_of_stock()
+# a.outstock()
 
-
-a=out_of_stock()
-a.outstock()
-
-# if __name__ =='__main__':
-#     # test = 'insert'
-#     # test = 'createfile'
+if __name__ =='__main__':
+    test = 'insert'
+      # test = 'createfile'
 #     # test = 'login'
 #     test = 'update'
 #     # test = 'searchall'
-#     ot = out_of_stock()
-#     prod_name = '품절상품입니다.'
-#     indexname ='out_product'
-#     index_name = 'product_list'
-#     if test =='insert':
-#         mall = DataMallProddetail()
-#         DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
+    ot = out_of_stock()
+    if test == 'createfile':
+        ot.file_write()
+    prod_name = '품절상품입니다.'
+    indexname ='out_product'
+    index_name = 'product_list'
+
+
+
+
+    if test =='insert':
+        mall = DataMallProddetail()
+        DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
 #
 #     for i in ot.outstock():
 #

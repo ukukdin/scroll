@@ -14,7 +14,8 @@ class DataZenProductList:
 
         # 몰 name code
         self.name_code_mall = None
-
+        # 신상품 리스트 url
+        self.new_prod_detail = None
         # 상품 카테고리
         self.category = None
         # 상품 번호
@@ -57,6 +58,8 @@ class DataZenProductList:
             'name_mall': self.name_mall,
             # 몰 name code
             'name_code_mall': self.name_code_mall,
+            # 신상품 리스트 url
+            'new_prod_detail': self.new_prod_detail,
             # 카테고리
             'category':self.category,
             # 상품명

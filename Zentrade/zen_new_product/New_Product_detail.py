@@ -1,9 +1,8 @@
-import time
 from bs4 import BeautifulSoup as BS
 import requests
 import os
-from Product_list import Whole_list
-from Zentrade.libara.zen_prodlist_detail import DataZenProductList
+from Zentrade.zen_product.Product_list import Whole_list
+from Zentrade.zen_new_product.data_new_Product_detail import DataZenProductList
 from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import Crawling.common.util_common as cu
 import New_product_list as Np
