@@ -24,7 +24,7 @@ class Product_List(Whole_list):
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
         }
-        self.prodctlist = "https://www.zentrade.co.kr/shop/goods/goods_view.php?goodsno="
+        self.new_proddetail_url = "https://www.zentrade.co.kr/shop/goods/goods_view.php?goodsno="
         # self.prodctlist_url_header = {
         #      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
         #                "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -49,8 +49,9 @@ class Product_List(Whole_list):
         self.name_code_mall = 'New_Detail_List'
 
         # 로그인
-        self.login_res = session.post(self.login_url, self.info,self.login_header)
-
+    def mall_login(self):
+        login_res = session.post(self.login_url, self.info,self.login_header)
+        print(login_res.text)
 
 
     def make_directory(self):
@@ -66,8 +67,8 @@ class Product_List(Whole_list):
         self.new_prod = Np.New_List().NP()
         for a in self.new_prod:
             self.No = list(a.values())[5]
-            # print(self.No)
-            url = self.prodctlist + str(self.No) + "&category="
+            print(self.No)
+            url = self.new_proddetail_url + str(self.No) + "&category="
             # print(url)
             login_res = session.get(url).text
             self.make_directory()
@@ -149,11 +150,11 @@ class Product_List(Whole_list):
                 mall.code_mall = self.code_mall
                 mall.name_mall = self.name_mall
                 mall.name_code_mall = self.name_code_mall
+                mall.new_proddetail_url = self.new_proddetail_url +prod_num
                 mall.category = category
                 mall.prod_num = prod_num
                 mall.prod_name = prod_name
                 mall.prod_price = prod_price
-                mall.prod_date = ''
                 mall.country = country
                 mall.prod_tax = prod_tax
                 mall.deli_price = deli_price
@@ -166,16 +167,19 @@ class Product_List(Whole_list):
                 mall.set_date_dict()
                 tmp_dict = mall.get_date_dict()
                 # print(tmp_dict)
-                newlist = [i for i in tmp_dict.values()]
                 new_prod_detail_list.append(tmp_dict)
+                print(new_prod_detail_list)
 
         return new_prod_detail_list
 
 #
 # a= Product_List()
-# # # a.__init__()
-# # a.file_write()
+# # # # a.__init__()
+# a.mall_login()
+#
+# a.file_write()
 # a.new_prod_list()
+
 if __name__ =='__main__':
     indexname = 'new_prod_detail'
     index_name = 'product_detail'
@@ -183,11 +187,13 @@ if __name__ =='__main__':
     # test = 'insert'
     test ='update'
     test='search'
-
+    # test= 'login'
     # 상품번호로 검색
     prod_num = '4204'
+    a=Product_List()
 
-
+    if test =='login':
+        a.mall_login()
 
 
     # 상세상품 insert
