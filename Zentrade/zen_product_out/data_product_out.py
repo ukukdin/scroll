@@ -16,8 +16,8 @@ class DataProductOut:
         self.name_code_mall = None
         # 상품 url
         self.prod_out_url = None
-        # 상품 카테고리
-        self.category = None
+
+
         # 상품 번호
         self.prod_num = None
         # 상품명
@@ -57,8 +57,7 @@ class DataProductOut:
             'name_code_mall': self.name_code_mall,
             # 상품 url
             'prod_out_url': self.prod_out_url,
-            # 카테고리
-            'category':self.category,
+
             # 상품명
             'prod_num':self.prod_num,
             #상품이름

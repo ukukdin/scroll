@@ -3,12 +3,13 @@ import Crawling.common.util_common as cu
 from Crawling.common.lib_es import LibES
 
 
-esip ='192.168.0.41:9200'
+esip ='192.168.0.43:9200'
 # esip = '127.0.0.1:9200'
 connections.create_connection(hosts=[esip])
 
 class DataWholepageIndex(Document):
     # 코드명 이름
+
     code_mall = Keyword()
     # 몰 이름
     name_mall = Keyword()

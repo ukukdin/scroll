@@ -1,5 +1,5 @@
 # 상세 상품 리스트 + 상세 신상품 리스트
-class DataZenProductList:
+class DataNewProductDetail:
     def __init__(self):
         self.data_dict = {}
         self.data_list = []
@@ -25,7 +25,6 @@ class DataZenProductList:
 
         # 상품가격
         self.prod_price = None
-        self.prod_date = None
         # 원산지
         self.country = None
 
@@ -68,7 +67,7 @@ class DataZenProductList:
             'prod_name':self.prod_name,
             #상품가격
             'prod_price':self.prod_price,
-            'prod_date':self.prod_date,
+
             # 원산지
             'country': self.country,
             # 과세여부

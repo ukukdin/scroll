@@ -4,7 +4,7 @@ from Crawling.common.lib_es import LibES
 
 
 # esip ='127.0.0.1:9200'
-esip ='192.168.0.41:9200'
+esip ='192.168.0.43:9200'
 connections.create_connection(hosts=[esip])
 
 class DataProductListIndex(Document):

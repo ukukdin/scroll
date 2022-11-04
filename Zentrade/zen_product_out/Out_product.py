@@ -5,13 +5,12 @@ from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import os
 import Crawling.common.util_common as cu
 
-session = requests.Session()
+# 품절페이지
 class out_of_stock():
     def __init__(self):
         super(out_of_stock, self).__init__()
-        from Zentrade.zen_product.Product_list import Whole_list
-        self.no = Whole_list().parser_wholelist()
 
+        self.session = requests.Session()
         self.loginPage = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -24,7 +23,8 @@ class out_of_stock():
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
         }
-        self.prod_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=40&resale_yn=all'
+        self.prod_out_url1 = 'https://www.zentrade.co.kr/shop/goods/goods_soldout.php?category=&sort=b.updatedt+desc%2C+b.goodsno+desc&page_num=80&resale_yn=all'
+        self.prod_out_url = 'https://www.zentrade.co.kr/shop/goods/goods_view.php?goodsno='
         self.prod_out_url_header = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Accept-Encoding": "gzip, deflate",
@@ -46,12 +46,12 @@ class out_of_stock():
         self.code_mall = 'M0000003'
         self.name_mall = 'zentrade'
         self.name_code_mall = 'Out_of_product'
-        self.login_res = session.post(self.loginPage, self.info, self.login_header)
 
 
 
-        self.login_res = session.get(self.prod_out_url)
-
+    def mall_login(self):
+        login_res = self.session.post(self.loginPage, self.info, self.login_header)
+        print(login_res.text)
 
     def make_directory(self):
         os.chdir("D:/data/")
@@ -60,14 +60,15 @@ class out_of_stock():
         else:
             os.mkdir("outofstock")
     def file_write(self):
-        url = self.prod_out_url
-        login_res = session.get(url).text
+        url = self.prod_out_url1
+        login_res = self.session.get(url).text
         self.make_directory()
         html_file = open(
             f'./outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall +
                 '.html', 'w', encoding='cp949')
         html_file.write(login_res)
         html_file.close()
+        print('완료')
 
 
 
@@ -75,8 +76,7 @@ class out_of_stock():
     def outstock(self):
         stock = []
         mall = DataProductOut()
-        html_file = open(f'd:/data/outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall+ '.html', 'r', encoding='cp949')
-        html = BS(html_file, "html.parser")
+        html = self.file_open()
         ranged = html.findAll("font", attrs={"color": "#000000"})
         detail = html.select("td table[class=outline_both]")
         for i in ranged:
@@ -126,85 +126,84 @@ class out_of_stock():
                     # 삭제예정일 첫번째단 최종
                     expire_date = expire_dated[page].text
 
-                    mall.timestamp = cu.getDateToday()
-                    mall.code_mall = self.code_mall
-                    mall.name_mall = self.name_mall
-                    mall.name_code_mall = self.name_code_mall
-                    mall.prod_out_url = self.prod_out_url
-                    mall.prod_num = prod_num
-                    mall.prod_name = prod_name
-                    mall.prod_price = prod_price
-
-                    mall.prod_out = prod_out
-                    mall.reason = reason
-                    mall.reorder = reorder
-                    mall.reorder_date = reorder_date
-                    mall.expire_date = expire_date
-                    mall.set_date_dict()
-                    tmp_dict = mall.get_date_dict()
-
+                    tmp_dict = self.mall_list(expire_date, mall, prod_name, prod_num, prod_out, prod_price, reason,
+                                              reorder, reorder_date)
                     stock.append(tmp_dict)
 
-                    # return stock
 
         return stock
 
+    def mall_list(self, expire_date, mall, prod_name, prod_num, prod_out, prod_price, reason, reorder, reorder_date):
+        mall.timestamp = cu.getDateToday()
+        mall.code_mall = self.code_mall
+        mall.name_mall = self.name_mall
+        mall.name_code_mall = self.name_code_mall
+        mall.prod_out_url = self.prod_out_url+str(prod_num)+'category='
+        mall.prod_num = prod_num
+        mall.prod_name = prod_name
+        mall.prod_price = prod_price
+        mall.prod_out = prod_out
+        mall.reason = reason
+        mall.reorder = reorder
+        mall.reorder_date = reorder_date
+        mall.expire_date = expire_date
+        mall.set_date_dict()
+        tmp_dict = mall.get_date_dict()
+        return tmp_dict
 
-
-
-
-
-
-
-
-
+    def file_open(self):
+        html_file = open(
+            f'd:/data/outofstock/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '.html', 'r',
+            encoding='cp949')
+        html = BS(html_file, "html.parser")
+        return html
 
 
 #
-#
-# a=out_of_stock()
-# a.outstock()
-
-if __name__ =='__main__':
-    test = 'insert'
-      # test = 'createfile'
+# if __name__ =='__main__':
+#     test = 'insert'
+#     # test = 'createfile'
 #     # test = 'login'
-#     test = 'update'
+# #     test = 'update'
 #     # test = 'searchall'
-    ot = out_of_stock()
-    if test == 'createfile':
-        ot.file_write()
-    prod_name = '품절상품입니다.'
-    indexname ='out_product'
-    index_name = 'product_list'
-
-
-
-
-    if test =='insert':
-        mall = DataMallProddetail()
-        DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
+#     # ot = out_of_stock()
+# #     if test == 'createfile':
+# #         ot.file_write()
+#     prod_name = '품절상품입니다.'
+#     indexname ='product_list'
+#     index_name = 'product_list'
 #
-#     for i in ot.outstock():
-#
-#         no = list(i.values())[5]
-#         if test == 'update':
-#             mall = DataMallProddetail()
-#             mall_prodnum = mall.search_mall_code(no,index_name)
-#             # update 위한 id 구하는 구문
-#             a= list(mall_prodnum.values())[3]
-#             b=list(a.values())[2]
-#             for a in b:
-#                 # 최종 update doc id
-#                 ids = list(a.values())[2]
-#                 all_data = mall.result_all_data_product(mall_prodnum)
-#                 for it in all_data:
-#                     print(it.get_date_dict())
-#                 if no != None:
-#                     mall.update_mall_code(prod_name, index_name,ids)
-#                     print('업데이트중 판매 종료 알림')
-#                 else:
-#                     print('중복이 없습니다. ')
-#
+#     if test =='login':
+#         ot.mall_login()
+#     if test == 'createfile':
+#         ot.file_write()
+# #
+# #
+#     if test =='insert':
+#         mall = DataMallProddetail()
+#         DataMallProddetail().insertbulk_prod(out_of_stock().outstock(),indexname)
+
+    # for i in ot.outstock():
+    #     no = list(i.values())[5]
+    #     print(no)
+    #     if test == 'update':
+    #         mall = DataMallProddetail()
+    #         mall_prodnum = mall.search_mall_code(no,index_name)
+    #         # update 위한 id 구하는 구문
+    #         a= list(mall_prodnum.values())[3]
+    #         b=list(a.values())[2]
+    #         for a in b:
+    #             # 최종 update doc id
+    #             ids = list(a.values())[2]
+    #             all_data = mall.result_all_data_product(mall_prodnum)
+    #             # for it in all_data:
+    #                 # print(it.get_date_dict())
+    #             if no != None:
+    #                 mall.update_mall_code(prod_name, index_name,ids)
+    #                 print('업데이트중 판매 종료 알림')
+    #             else:
+    #                 print('중복이 없습니다. ')
+    #
+    #
 
 

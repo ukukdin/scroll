@@ -1,17 +1,21 @@
 from bs4 import BeautifulSoup as BS
 import requests
+from elasticsearch_dsl import Document, Integer, Keyword, connections,Text,Date,Nested
+
 from Crawling.common.lib_request import RequestHit
 from Zentrade.zen_product.data_product_list import DataProductList
+from Zentrade.index.index_product_list import DataWholepageIndex
 from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import Crawling.common.util_common as cu
 import os
+from Zentrade.zen_product_out.Out_product import out_of_stock
 
-session = requests.Session()
 
+# 전체 상품 페이지 리스트
 class Whole_list(RequestHit):
     def __init__(self):
         super(Whole_list, self).__init__()
-
+        self.session = requests.Session()
 
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
@@ -45,11 +49,7 @@ class Whole_list(RequestHit):
         self.name_mall = 'zentrade'
         self.name_code_mall = 'ZEN'
 
-        self.fpath_prodlist = None
-        self.flist_prodlist = None
         # 상품 코드
-        self.code_prod_hit = 1000000
-        self.code_prod_origin = 1000000
         # Data - file
         self.date = None
         self.info = {
@@ -59,7 +59,7 @@ class Whole_list(RequestHit):
         }
     # login
     def mall_login(self):
-        login_res = session.post(self.login_url,self.info)
+        login_res = self.session.post(self.login_url,self.info)
         print(login_res.text)
 
     # 폴더 생성
@@ -74,7 +74,7 @@ class Whole_list(RequestHit):
     def file_write(self):
         for page in range(1,52,1):
             url = self.Whole_prod_url+str(page)
-            login_res = session.get(url).text
+            login_res = self.session.get(url).text
             self.make_directory()
             html_file = open(f'./'+self.gubun+'/'+self.path+'/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','w', encoding='cp949')
             html_file.write(login_res)
@@ -87,12 +87,9 @@ class Whole_list(RequestHit):
         mall = DataProductList()
         for page in range(1,52,1):
 
-            file = open(f'd:/data/'+self.gubun+'/'+self.path+'/'+self.name_mall+'_'+self.name_code_mall+'_'+self.code_mall+'_'+str(page)+'.html','r', encoding='cp949')
-            html = BS(file.read(),'html.parser')
-
-            # html = BS(read.text, "html.parser")
+            html = self.file_open(page)
             tag_table = html.select('td[width="25%"]')
-            # print(tag_table)
+
             for productList in tag_table:
                 tt = productList.select('div')
                 # 숫자
@@ -103,16 +100,7 @@ class Whole_list(RequestHit):
                 ttt = productList.select('b')
 
                 # 상품가격
-                prod_price = ttt[0].string.replace(",","")
-                mall.timestamp = cu.getDateToday()
-                mall.code_mall = self.code_mall
-                mall.name_mall = self.name_mall
-                mall.name_code_mall = self.name_code_mall
-                mall.prodlist_url =self.Whole_prod_url + str(page)
-                mall.prod_num = self.prod_num
-                mall.prod_name = prod_name
-                mall.prod_price = prod_price
-
+                self.mall_list(mall, page, prod_name, ttt)
 
                 mall.set_date_dict()
                 tmp_dict = mall.get_date_dict()
@@ -121,13 +109,45 @@ class Whole_list(RequestHit):
                 listproduct.append(tmp_dict)
         return listproduct
 
-# a=Whole_list()
-# a.parser_wholelist()
+    def file_open(self, page):
+        file = open(
+            f'd:/data/' + self.gubun + '/' + self.path + '/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' + str(
+                page) + '.html', 'r', encoding='cp949')
+        html = BS(file.read(), 'html.parser')
+        return html
+
+    def mall_list(self, mall, page, prod_name, ttt):
+        prod_price = ttt[0].string.replace(",", "")
+        mall.code_mall = self.code_mall
+        mall.name_mall = self.name_mall
+        mall.name_code_mall = self.name_code_mall
+        mall.prodlist_url = self.Whole_prod_url + str(page)
+        mall.prod_num = self.prod_num
+        mall.prod_name = prod_name
+        mall.prod_price = prod_price
+
+#     def nested(self):
+#         dic =[]
+#
+#         code_mall = 'moodle'
+#         name_code_mall = 'zentrade'
+#         name_mall = 'zen'
+#         prod_name='아프다'
+#         prod_num = '12'
+#         prod_price = 1234
+#         prod_url = 'XXX'
+#         dic.append([code_mall,name_code_mall,prod_url,name_mall,
+#                    prod_num,prod_name,prod_price])
+#         print(dic)
+#         return dic
+
 if __name__ == '__main__':
 
-    #######################
-    # test = 'create_file
-    # test = ' login'
+    indexname = 'product_list'
+
+#     #######################
+#     # test = 'create_file
+#     # test = ' login'
     test = 'insert'
     # test = 'search_name'
     # test = 'search'
@@ -141,24 +161,32 @@ if __name__ == '__main__':
     # # login
     # if test == 'login':
     # whole.mall_login()
-    mall = whole.code_mall
-    indexname = 'product_list'
-    # insert
+    #  mall = whole.code_mall
+
+
+     # insert
     if test == 'insert' :
-       mall = DataMallProddetail()
-       b=Whole_list().parser_wholelist()
-       DataMallProddetail().insertbulk_prod(Whole_list().parser_wholelist(),indexname)
+        mall = DataMallProddetail()
+        a=Whole_list().parser_wholelist()
+        from Zentrade.zen_product.Product_detail import Product_List
+        b=Product_List().prod_list()
+        # b=out_of_stock().outstock()
 
-    if test == 'search_name':
-        malles = DataMallProddetail()
-        mall_code_res = malles.search_mall_code(mall,indexname)
-        print('mall_code : ', mall_code_res)
-        all_data = malles.result_all_data_product(mall_code_res)
-        for it in all_data:
-            print(it.get_date_dict())
-        print('len : ', len(all_data))
+        DataMallProddetail().insertbulk_prod(a,b,indexname)
 
+#
+#     if test == 'search_name':
+#         malles = DataMallProddetail()
+#         mall_code_res = malles.search_mall_code(mall,indexname)
+#         print('mall_code : ', mall_code_res)
+#         all_data = malles.result_all_data_product(mall_code_res)
+#         for it in all_data:
+#             print(it.get_date_dict())
+#         print('len : ', len(all_data))
+#
+#
+#
+#     # #######################
+#     # # sess close
+    whole.close_session()
 
-    # #######################
-    # # sess close
-# #     whole.close_session()

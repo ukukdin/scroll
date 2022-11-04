@@ -7,11 +7,12 @@ from Zentrade.zen_new_product.data_new_product_list import DataProductNewList
 
 from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 
-session = requests.Session()
 
+# 신상품 리스트 페이지
 class New_List():
     def __init__(self):
         super(New_List, self).__init__()
+        self.session = requests.Session()
         from Zentrade.zen_product.Product_list import Whole_list
         self.num = Whole_list().parser_wholelist()
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
@@ -44,7 +45,7 @@ class New_List():
 
 
     def mall_login(self):
-        login_res = session.post(self.login_url, self.info, self.login_header)
+        login_res = self.session.post(self.login_url, self.info, self.login_header)
         print(login_res.text)
 
     def make_directory(self):
@@ -56,11 +57,11 @@ class New_List():
 
     def file_write(self):
 
-        a = self.new_prodlist_url+'2022-08-05'
-        login_res = session.get(a).text
+        a = self.new_prodlist_url+cu.getDateToday()
+        login_res = self.session.get(a).text
         self.make_directory()
         html_file = open(
-            f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +'2022-08-05'+'.html', 'w', encoding='cp949')
+            f'./NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +cu.getDateToday()+'.html', 'w', encoding='cp949')
         html_file.write(login_res)
         html_file.close()
 
@@ -68,11 +69,7 @@ class New_List():
     def NP(self):
         new_product_list = []
 
-        file = open(
-            f'd:/data/NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_'+'2022-08-05'+'.html', 'r', encoding='cp949')
-        self.html = BS(file.read(), "html.parser")
-        self.new_list = self.html.findAll("td", attrs={"bgcolor": "FFD9EC", "height": "40", "id": "b_white",
-                                               "style": "padding-left:15px;"})
+        self.file_open()
         mall = DataProductNewList()
 
         for a in self.new_list:
@@ -90,89 +87,87 @@ class New_List():
                     # 신상품 등록일
                     prod_date = detail[2].string.replace("신상품 등록일 : ", "")
 
-                    # print('prod_date 신상품 데이는:' ,type(prod_date))
                     # 새로운 상품 번호
                     prod_num = detail[3].string.replace("No. ", "")
-                    # print('prod_num 신상품 데이는:' ,prod_num)
+
 
                     # 새로운 상품 이름
                     prod_name = detail[4].string
-                    # print('prod_name 신상품 데이는:' ,prod_name)
+
 
                     p = detail[1].select('b')
                     prod_price = p[0].string.replace(",","")
-                    # print('prod_price 신상품 데이는:' ,prod_price)
 
 
-                    mall.timestamp = cu.getDateToday()
-                    mall.code_mall = self.code_mall
-                    mall.name_mall = self.name_mall
-                    mall.name_code_mall = self.name_code_mall
-                    mall.new_prodlist_url = self.new_prodlist_url+cu.getDateToday()
-                    mall.prod_num = prod_num
-                    mall.prod_name = prod_name
-                    mall.prod_price= prod_price
-                    mall.prod_date = prod_date
-
-
+                    self.mall_list(mall, prod_date, prod_name, prod_num, prod_price)
 
                     mall.set_date_dict()
                     tmp_dict = mall.get_date_dict()
 
-                    newlist = [i for i in tmp_dict.values()]
                     new_product_list.append(tmp_dict)
 
         return new_product_list
 
+    def file_open(self):
+        file = open(
+            f'd:/data/NewProduct/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' + cu.getDateToday() + '.html',
+            'r', encoding='cp949')
+        self.html = BS(file.read(), "html.parser")
+        self.new_list = self.html.findAll("td", attrs={"bgcolor": "FFD9EC", "height": "40", "id": "b_white",
+                                                       "style": "padding-left:15px;"})
+
+    def mall_list(self, mall, prod_date, prod_name, prod_num, prod_price):
+        mall.timestamp = cu.getDateToday()
+        mall.code_mall = self.code_mall
+        mall.name_mall = self.name_mall
+        mall.name_code_mall = self.name_code_mall
+        mall.new_prodlist_url = self.new_prodlist_url + cu.getDateToday()
+        mall.prod_num = prod_num
+        mall.prod_name = prod_name
+        mall.prod_price = prod_price
+        mall.prod_date = prod_date
 
 
+a = New_List()
 
-# a = New_List()
-# a.mall_login()
-# 파일 불러오기
-# a.file_write()
-# 신상품 있는지 없는지 확인 후 값 가져오는것.
-# a.NP()
 
-# if __name__ =='__main__':
-#     indexname = 'new_product_list'
-#     index_name = 'product_list'
-#
-#     prod_out = '신상품'
-#     # test = 'createfile'
-#     test = 'login'
-#     # test= 'search'
-#     # test  = 'insert'
-#
-#     np = New_List()
-#     if test == 'login':
-#         np.mall_login()
-#
-#     if test =='createfile':
-#         np.file_write()
-#
-#     if test == 'insert':
-#         mall = DataMallProddetail()
-#         New_List().NP()
-#         DataMallProddetail().insertbulk_prod(New_List().NP(),indexname)
-#
-#     for i in np.NP():
-#         no = list(i.values())[5]
-#         if test == 'search':
-#             mall = DataMallProddetail()
-#             mall_prodnum = mall.search_mall_code(no,index_name)
-#             # update 위한 id 구하는 구문
-#             a= list(mall_prodnum.values())[3]
-#             b=list(a.values())[2]
-#             for a in b:
-#                 # 최종 update doc id
-#                 ids = list(a.values())[2]
-#                 # all_data = mall.result_all_data_newproduct(mall_prodnum)
-#                 #
-#                 # for it in all_data:
-#                 #     print(it.get_date_dict())
-#                 if no == None:
-#                     mall.update_mall_coded(New_List().NP(), index_name,ids)
-#                     print('신상품 등록합니다.')
-#                 else:
-#                     print('이미 등록된 상품입니다. ')
+if __name__ =='__main__':
+    indexname = 'new_product_list'
+    index_name = 'product_list'
+
+    prod_out = '신상품'
+    test = 'login'
+    # test = 'createfile'
+
+    test= 'search'
+    # test  = 'insert'
+
+    np = New_List()
+    if test == 'login':
+        np.mall_login()
+
+    if test =='createfile':
+        np.file_write()
+
+    if test == 'insert':
+        mall = DataMallProddetail()
+        New_List().NP()
+        DataMallProddetail().insertbulk_prod(New_List().NP(),indexname)
+
+    for i in np.NP():
+        no = list(i.values())[5]
+        if test == 'search':
+            mall = DataMallProddetail()
+            mall_prodnum = mall.search_mall_code(no,index_name)
+            # update 위한 id 구하는 구문
+            a= list(mall_prodnum.values())[3]
+            b=list(a.values())[2]
+            for a in b:
+                # 최종 update doc id
+                ids = list(a.values())[2]
+
+                if no == None:
+                    mall.update_mall_coded(New_List().NP(), index_name,ids)
+                    print('신상품 등록합니다.')
+                else:
+                    print('이미 등록된 상품입니다. ')

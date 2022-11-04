@@ -6,15 +6,15 @@ from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import Crawling.common.util_common as cu
 
 
-session = requests.Session()
 
 
+# 전체 상품 디테일
 class Product_List():
     # print(p)
     def __init__(self):
 
         super(Product_List, self).__init__()
-
+        self.session = requests.Session()
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -52,7 +52,7 @@ class Product_List():
 
         # 로그인
 
-        self.login_res = session.post(self.login_url, self.info,self.login_header)
+        self.login_res = self.session.post(self.login_url, self.info,self.login_header)
 
 
     def make_directory(self):
@@ -68,9 +68,10 @@ class Product_List():
         self.no = wholepage.Whole_list().parser_wholelist()
         # print(self.no)
         for num in self.no:
-            self.No=list(num.values())[5]
+            self.No=list(num.values())[4]
+            # print(self.No)
             url = self.prod_detail_url+str(self.No)+"&category="
-            login_res = session.get(url,headers=self.prodctlist_url_header).text
+            login_res = self.session.get(url,headers=self.prodctlist_url_header).text
             self.make_directory()
             html_file = open(f'./prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
                              str(self.No) + '.html', 'w', encoding='cp949')
@@ -87,157 +88,161 @@ class Product_List():
 
         prod_detail_list = []
         mall = DataProdlist_detail()
-        path ='d:/data/prod_list/'
-        file_list = os.listdir(path)
-        filename = [file for file in file_list if file.endswith('.html') ]
         import Zentrade.zen_product.Product_list as wholepage
         nob = wholepage.Whole_list().parser_wholelist()
-        for file in filename:
-            self.html_file = open(f'd:/data/prod_list/'
-                                      +file,  'r', encoding='cp949')
-            html = BS(self.html_file, "html.parser")
+        for num in nob:
+            self.No = list(num.values())[4]
+            # print(list(num.values()))
+            # 파일 꺼내오기
+            html = self.file_open()
             itemlist = html.select("div[class=indiv]")
-            for num in nob:
-                self.No = list(num.values())[5]
-                for detail in itemlist:
-                    # 카테고리
-                    category = detail.select("div[align=right] a")
-                    # 제목/상품번호
-                    prod_name = detail.select("td font[style^=font-size] b")
-                    prod_num = detail.select('td font[style^=font-size] b ')
+            for detail in itemlist:
+                # 카테고리
+                category = detail.select("div[align=right] a")
+                # 제목/상품번호
+                prod_name = detail.select("td font[style^=font-size] b")
+                prod_num = detail.select('td font[style^=font-size] b ')
 
-                    # 가격
-                    prod_price = detail.select('span[id=price]')
+                # 가격
+                prod_price = detail.select('span[id=price]')
 
-                    # 배송비
-                    prod_deli = detail.select('tr[height="20"] b')
+                # 배송비
+                prod_deli = detail.select('tr[height="20"] b')
 
-                    # 원산지/과세여부
-                    country_tax = detail.select('tr[height="30"] td')
+                # 원산지/과세여부
+                country_tax = detail.select('tr[height="30"] td')
 
-                    # 배송디테일
-                    deli_detail = detail.select('form[name=frmView] table:nth-of-type(2) font')
-                    changelist = detail.select('table[align=center] tr:nth-of-type(2) td')
-                    # 변동내역
+                # 배송디테일
+                deli_detail = detail.select('form[name=frmView] table:nth-of-type(2) font')
+                changelist = detail.select('table[align=center] tr:nth-of-type(2) td')
+                # 변동내역
 
-                    # # 옵션정보
-                    # option1 = detail.findAll('table',attrs={'border':'0','cellpadding':'0','cellspacing':'0','class':'top'})
-                    #
-                    # for option2 in option1:
-                    #      option_detail = option2.get_text(strip=True).replace("== 옵션선택 ==", "")
-                    #
-                    #      option= option2.replace('색상 :','')
+                # # 옵션정보
+                # option1 = detail.findAll('table',attrs={'border':'0','cellpadding':'0','cellspacing':'0','class':'top'})
+                #
+                # for option2 in option1:
+                #      option_detail = option2.get_text(strip=True).replace("== 옵션선택 ==", "")
+                #
+                #      option= option2.replace('색상 :','')
 
-                    # 원산지
-                    country = country_tax[0].string
-                    # 과세여부
-                    prod_tax = country_tax[1].string.replace('\n', '')
-                    # # 배송디테일
-                    deli_detail1 = deli_detail[0].string
-                    deli_detail2 = deli_detail[1].string
+                # 원산지
+                country = country_tax[0].string
+                # 과세여부
+                prod_tax = country_tax[1].string.replace('\n', '')
+                # # 배송디테일
+                deli_detail1 = deli_detail[0].string
+                deli_detail2 = deli_detail[1].string
 
-                    # # 가격
-                    prod_price = prod_price[0].string.replace(",", '')
+                # # 가격
+                prod_price = prod_price[0].string.replace(",", '')
 
-                    # 배송비
-                    deli_price = prod_deli[0].string.replace(",", '')
+                # 배송비
+                deli_price = prod_deli[0].string.replace(",", '')
 
-                    # 카테고리
-                    category = category[0].string
-                    # 제목
-                    prod_name = prod_name[0].string
-                    # 상품번호
-                    prod_num = prod_num[1].string.replace("상품번호 : ", "")
-                    # print(prod_num)
-                    # 변동내용(변경항목,상세내용,변경일시)
-                    changedlist = changelist[0].string
-                    detail_text = changelist[1].string
-                    change_date = changelist[2].string
+                # 카테고리
+                category = category[0].string
+                # 제목
+                prod_name = prod_name[0].string
+                # 상품번호
+                prod_num = prod_num[1].string.replace("상품번호 : ", "")
+                # print(prod_num)
+                # 변동내용(변경항목,상세내용,변경일시)
+                changedlist = changelist[0].string
+                detail_text = changelist[1].string
+                change_date = changelist[2].string
 
-                    mall.timestamp = cu.getDateToday()
-                    mall.code_mall = self.code_mall
-                    mall.name_mall = self.name_mall
-                    mall.name_code_mall = self.name_code_mall
-                    mall.prod_detail_url = self.prod_detail_url + str(self.No) + "&category="
-                    mall.category = category
-                    mall.prod_num = prod_num
-                    mall.prod_name = prod_name
-                    mall.prod_price = prod_price
-                    mall.country = country
-                    mall.prod_tax = prod_tax
-                    mall.deli_price = deli_price
-                    mall.deli_detail1 = deli_detail1
-                    mall.deli_detail2 = deli_detail2
-                    mall.changedlist = changedlist
-                    mall.detail_tax = detail_text
-                    mall.change_dete = change_date
+                self.mall_list(category, change_date, changedlist, country, deli_detail1, deli_detail2, deli_price,
+                               detail_text, mall, prod_name, prod_num, prod_price, prod_tax)
+                tmp_dict = mall.get_date_dict()
 
-                    mall.set_date_dict()
-                    tmp_dict = mall.get_date_dict()
-                    newlist = [i for i in tmp_dict.values()]
 
-                    prod_detail_list.append(tmp_dict)
+                prod_detail_list.append(tmp_dict)
 
         return prod_detail_list
 
+    def file_open(self):
+        html_file = open(
+            f'd:/data/prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
+            str(self.No) + '.html', 'r', encoding='cp949')
+        html = BS(html_file, "html.parser")
+        return html
 
-
+    def mall_list(self, category, change_date, changedlist, country, deli_detail1, deli_detail2, deli_price,
+                  detail_text, mall, prod_name, prod_num, prod_price, prod_tax):
+        mall.timestamp = cu.getDateToday()
+        mall.code_mall = self.code_mall
+        mall.name_mall = self.name_mall
+        mall.name_code_mall = self.name_code_mall
+        mall.prod_detail_url = self.prod_detail_url + str(self.No) + "&category="
+        mall.category = category
+        mall.prod_num = prod_num
+        mall.prod_name = prod_name
+        mall.prod_price = prod_price
+        mall.country = country
+        mall.prod_tax = prod_tax
+        mall.deli_price = deli_price
+        mall.deli_detail1 = deli_detail1
+        mall.deli_detail2 = deli_detail2
+        mall.changedlist = changedlist
+        mall.detail_tax = detail_text
+        mall.change_dete = change_date
+        mall.set_date_dict()
 
 
 #
-# a=Product_List()
+a=Product_List()
 
 # # a.file_write()
-# a.prod_list()
-
-if __name__ == '__main__':
-    # insert
-    test = 'insert'
-    # 검색
-    # test = 'search'
-
-    # test = 'search_all'
-    # login
-    # test = 'login'
-    # create 파일 생성
-    # test = 'createfile'
-
-    detail= Product_List()
-    # -------------------------#
-    # 코드명
-    code_mall = detail.code_mall
-    # 상품명
-    name = '휴지'
-    indexname = 'product_detail'
-    # if test =='login':
-    #     detail.mall_login()
-    # # 파일생성
-    if test == 'createfile':
-        print("하나씩")
-        detail.prod_list()
-
-    # insert
-    if test == 'insert':
-        mall = DataProdlist_detail()
-        DataMallProddetail().insertbulk_prod(Product_List().prod_list(),indexname)
-
-    # code_mall 하나로 검색하는방법
-    if test == 'search':
-        malles = DataMallProddetail()
-
-        mall_code_res = malles.search_mall_code(code_mall,indexname)
-        print('mall_code : ', mall_code_res)
-        all_data = malles.result_all_productdetail(mall_code_res)
-        for it in all_data:
-            print(it.get_date_dict())
-        print('len : ', len(all_data))
-
-    # 전체 검색
-    if test == 'search_all':
-        malles = DataMallProddetail()
-        malles_search_all = malles.getAllProddetail(indexname)
-        print('mall_code : ', malles_search_all)
-        all_data = malles.result_all_productdetail(malles_search_all)
-        for it in all_data:
-            print(it.get_date_dict())
-        print('len : ', len(all_data))
+a.prod_list()
+#
+# if __name__ == '__main__':
+#     # insert
+#     test = 'insert'
+#     # 검색
+#     # test = 'search'
+#
+#     # test = 'search_all'
+#     # login
+#     # test = 'login'
+#     # create 파일 생성
+#     # test = 'createfile'
+#
+#     detail= Product_List()
+#     # -------------------------#
+#     # 코드명
+#     code_mall = detail.code_mall
+#     # 상품명
+#     name = '휴지'
+#     indexname = 'product_detail'
+#     # if test =='login':
+#     #     detail.mall_login()
+#     # # 파일생성
+#     if test == 'createfile':
+#         print("하나씩")
+#         detail.prod_list()
+#
+#     # insert
+#     if test == 'insert':
+#         mall = DataProdlist_detail()
+#         DataMallProddetail().insertbulk_prod(Product_List().prod_list(),indexname)
+#
+#     # code_mall 하나로 검색하는방법
+#     if test == 'search':
+#         malles = DataMallProddetail()
+#
+#         mall_code_res = malles.search_mall_code(code_mall,indexname)
+#         print('mall_code : ', mall_code_res)
+#         all_data = malles.result_all_productdetail(mall_code_res)
+#         for it in all_data:
+#             print(it.get_date_dict())
+#         print('len : ', len(all_data))
+#
+#     # 전체 검색
+#     if test == 'search_all':
+#         malles = DataMallProddetail()
+#         malles_search_all = malles.getAllProddetail(indexname)
+#         print('mall_code : ', malles_search_all)
+#         all_data = malles.result_all_productdetail(malles_search_all)
+#         for it in all_data:
+#             print(it.get_date_dict())
+#         print('len : ', len(all_data))

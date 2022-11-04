@@ -1,12 +1,13 @@
-# 상품 리스트 + 신상품 리스트 + 품절 리스트
+# 상품 리스트 + 신상품 리스트 + 품절 리스트\
+from elasticsearch_dsl import Document, Integer, Keyword, connections,Text,Date,Nested
+from Zentrade.index.index_product_list import DataWholepageIndex
 class DataProductList:
+
     def __init__(self):
         self.data_dict = {}
         self.data_list = []
+        self.a=DataWholepageIndex()
 
-        self.timestamp = None
-
-        # 몰 code
         self.code_mall = None
 
         # 몰 name
@@ -29,9 +30,9 @@ class DataProductList:
         return self.data_dict
 
     def set_date_dict(self):
-        self.data_dict = {
-            '@timestamp': self.timestamp,
-            # 6
+
+       self.data_dict = {
+
             # 몰 code
             'code_mall': self.code_mall,
             # 몰 name

@@ -2,15 +2,15 @@ from bs4 import BeautifulSoup as BS
 import requests
 import os
 from Zentrade.zen_product.Product_list import Whole_list
-from Zentrade.zen_new_product.data_new_Product_detail import DataZenProductList
+from Zentrade.zen_new_product.data_new_Product_detail import DataNewProductDetail
 from Zentrade.index_zentrade.zen_lib_detail import DataMallProddetail
 import Crawling.common.util_common as cu
 import New_product_list as Np
-session = requests.Session()
+#
 class Product_List(Whole_list):
     def __init__(self):
         super(Product_List, self).__init__()
-
+        self.session = requests.Session()
 
         self.login_url = "https://www.zentrade.co.kr/shop/member/login_ok.php"
         self.login_header = {
@@ -50,7 +50,7 @@ class Product_List(Whole_list):
 
         # 로그인
     def mall_login(self):
-        login_res = session.post(self.login_url, self.info,self.login_header)
+        login_res = self.session.post(self.login_url, self.info,self.login_header)
         print(login_res.text)
 
 
@@ -67,10 +67,10 @@ class Product_List(Whole_list):
         self.new_prod = Np.New_List().NP()
         for a in self.new_prod:
             self.No = list(a.values())[5]
-            print(self.No)
+            # print(self.No)
             url = self.new_proddetail_url + str(self.No) + "&category="
             # print(url)
-            login_res = session.get(url).text
+            login_res = self.session.get(url).text
             self.make_directory()
             html_file = open(
                 f'./new_prod_list/' + self.name_mall + '_' + self.name_code_mall + '_' + self.code_mall + '_' +
@@ -86,7 +86,7 @@ class Product_List(Whole_list):
 
     def new_prod_list(self):
         new_prod_detail_list = []
-        mall = DataZenProductList()
+        mall = DataNewProductDetail()
         path  = 'd:/data/new_prod_list/'
         file_list = os.listdir(path)
         filename = [file for file in file_list if file.endswith('.html') ]
@@ -138,39 +138,44 @@ class Product_List(Whole_list):
                 prod_name = prod_name[0].string
                 # 상품번호
                 prod_num = prod_num[1].string.replace('상품번호 : ','')
-                print(prod_num)
+                # print(prod_num)
                 # 변동내용(변경항목,상세내용,변경일시)
 
                 changedlist = changelist[0].string
                 detail_text = changelist[1].string
                 change_date = changelist[2].string
 
-
-                mall.timestamp = cu.getDateToday()
-                mall.code_mall = self.code_mall
-                mall.name_mall = self.name_mall
-                mall.name_code_mall = self.name_code_mall
-                mall.new_proddetail_url = self.new_proddetail_url +prod_num
-                mall.category = category
-                mall.prod_num = prod_num
-                mall.prod_name = prod_name
-                mall.prod_price = prod_price
-                mall.country = country
-                mall.prod_tax = prod_tax
-                mall.deli_price = deli_price
-                mall.deli_detail1 = deli_detail1
-                mall.deli_detail2 = deli_detail2
-                mall.changedlist = changedlist
-                mall.detail_tax = detail_text
-                mall.change_dete = change_date
-
-                mall.set_date_dict()
-                tmp_dict = mall.get_date_dict()
+                tmp_dict = self.mall_list(category, change_date, changedlist, country, deli_detail1, deli_detail2,
+                                          deli_price, detail_text, mall, prod_name, prod_num, prod_price, prod_tax)
                 # print(tmp_dict)
                 new_prod_detail_list.append(tmp_dict)
-                print(new_prod_detail_list)
+
 
         return new_prod_detail_list
+
+    def mall_list(self, category, change_date, changedlist, country, deli_detail1, deli_detail2, deli_price,
+                  detail_text, mall, prod_name, prod_num, prod_price, prod_tax):
+        mall.timestamp = cu.getDateToday()
+        mall.code_mall = self.code_mall
+        mall.name_mall = self.name_mall
+        mall.name_code_mall = self.name_code_mall
+        mall.new_proddetail_url = self.new_proddetail_url + prod_num
+        mall.category = category
+        mall.prod_num = prod_num
+        mall.prod_name = prod_name
+        mall.prod_price = prod_price
+        mall.country = country
+        mall.prod_tax = prod_tax
+        mall.deli_price = deli_price
+        mall.deli_detail1 = deli_detail1
+        mall.deli_detail2 = deli_detail2
+        mall.changedlist = changedlist
+        mall.detail_tax = detail_text
+        mall.change_dete = change_date
+        mall.set_date_dict()
+        tmp_dict = mall.get_date_dict()
+        return tmp_dict
+
 
 #
 # a= Product_List()
@@ -186,10 +191,11 @@ if __name__ =='__main__':
 
     # test = 'insert'
     test ='update'
-    test='search'
+    # test='search'
     # test= 'login'
     # 상품번호로 검색
-    prod_num = '4204'
+    prod_num = '4246'
+    prod_out = '품절'
     a=Product_List()
 
     if test =='login':
@@ -204,23 +210,27 @@ if __name__ =='__main__':
     # 상세상품 update
     npd = Product_List()
     for i in npd.new_prod_list():
-        print(i)
-        no = list(i.values())[5]
+        # print(i)
+        no = list(i.values())[6]
+        print(no)
         if test == 'update':
             mall = DataMallProddetail()
             mall_prodnum = mall.search_mall_code(no, index_name)
-
             # update 위한 id 구하는 구문
             a = list(mall_prodnum.values())[3]
             b = list(a.values())[2]
             for a in b:
                 # 최종 update doc id
                 ids = list(a.values())[2]
+                # print(ids)
                 if no == None:
                     mall.update_mall_coded(Product_List().new_prod_list(), index_name, ids)
                     print('신상품 등록합니다. ')
                 else:
                     print('이미 등록된 상품입니다. ')
+
+
+
     # 상세 상품 검색
     if test == 'search':
         malles = DataMallProddetail()
